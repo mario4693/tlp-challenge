@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomerService {
 
-    public CustomerDTO createUser() {
+    public CustomerDTO createCustomer() {
         return null;
     }
 }
