@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,19 +19,18 @@ class CustomerControllerTest {
 
     private CustomerController customerController;
 
+    private final static CustomerDTO aCustomerDTO = new CustomerDTO(1L, "Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
+
     @BeforeEach
     void setUp() {
         customerController = new CustomerController(customerService);
     }
 
     @Test
-    void createUser_shouldReturn201AndANewUser(){
-        CustomerDTO aCustomer = new CustomerDTO(1L, "Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
-
-        when(customerService.createCustomer()).thenReturn(aCustomer);
-        ResponseEntity<CustomerDTO> response = customerController.createCustomer();
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(aCustomer, response.getBody());
+    void createCustomer_shouldCreateANewCustomer(){
+        when(customerService.saveCustomer(aCustomerDTO)).thenReturn(aCustomerDTO);
+        ResponseEntity<CustomerDTO> response = customerController.createCustomer(aCustomerDTO);
+        verify(customerService, only()).saveCustomer(aCustomerDTO);
+        assertEquals(aCustomerDTO, response.getBody());
     }
 }

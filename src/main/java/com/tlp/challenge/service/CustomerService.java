@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomerService {
 
-    public CustomerDTO createCustomer() {
+    public CustomerDTO saveCustomer(CustomerDTO aCustomerDTO) {
         return null;
     }
 }
