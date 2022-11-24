@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
@@ -22,6 +23,7 @@ class CustomerServiceTest {
     private CustomerService customerService;
 
     private final static SignupDTO aSignupDTO = new SignupDTO("Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
+    private final static CustomerDTO aCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
 
     private final Customer aCustomer = new CustomerBuilder()
             .withId(1L)
@@ -42,7 +44,7 @@ class CustomerServiceTest {
         CustomerDTO customerDTO = customerService.saveCustomer(aSignupDTO);
         verify(customerRepository).save(any());
         verifyNoMoreInteractions(customerRepository);
-        assertNotNull(customerDTO);
+        assertEquals(aCustomerDTO, customerDTO);
         assertNotNull(customerDTO.id());
     }
 }
