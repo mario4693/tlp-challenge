@@ -28,6 +28,7 @@ public class CustomerService {
                 .withSurname(signupDTO.surname())
                 .withFiscalCode(signupDTO.fiscalCode())
                 .withAddress(signupDTO.address())
+                .withDevices(signupDTO.devices())
                 .build();
     }
 
