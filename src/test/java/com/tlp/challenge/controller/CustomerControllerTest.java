@@ -1,6 +1,7 @@
 package com.tlp.challenge.controller;
 
 import com.tlp.challenge.dto.CustomerDTO;
+import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,8 @@ class CustomerControllerTest {
 
     private CustomerController customerController;
 
-    private final static CustomerDTO aCustomerDTO = new CustomerDTO(1L, "Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
+    private final static SignupDTO aSignupDTO = new SignupDTO("Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
+    private final static CustomerDTO aCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
 
     @BeforeEach
     void setUp() {
@@ -27,10 +29,10 @@ class CustomerControllerTest {
     }
 
     @Test
-    void createCustomer_shouldCreateANewCustomer(){
-        when(customerService.saveCustomer(aCustomerDTO)).thenReturn(aCustomerDTO);
-        ResponseEntity<CustomerDTO> response = customerController.createCustomer(aCustomerDTO);
-        verify(customerService, only()).saveCustomer(aCustomerDTO);
+    void createCustomer_shouldReturnANewCustomer(){
+        when(customerService.saveCustomer(aSignupDTO)).thenReturn(aCustomerDTO);
+        ResponseEntity<CustomerDTO> response = customerController.createCustomer(aSignupDTO);
+        verify(customerService, only()).saveCustomer(aSignupDTO);
         assertEquals(aCustomerDTO, response.getBody());
     }
 }

@@ -1,6 +1,7 @@
 package com.tlp.challenge.controller;
 
 import com.tlp.challenge.dto.CustomerDTO;
+import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.service.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO aCustomerDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(customerService.saveCustomer(aCustomerDTO));
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody SignupDTO signupDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerService.saveCustomer(signupDTO));
     }
 }
