@@ -66,6 +66,7 @@ public class CustomerService {
     }
 
     public Optional<CustomerDTO> getCustomerFromId(Long customerId) {
-        return null;
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+        return optionalCustomer.map(this::toCustomerDTO);
     }
 }

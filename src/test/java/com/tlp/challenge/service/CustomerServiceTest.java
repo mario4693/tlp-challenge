@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.tlp.challenge.service.CustomerService.toListOfDevices;
@@ -57,5 +58,25 @@ class CustomerServiceTest {
         assertEquals(aCustomerDTO, customerDTO);
         assertNotNull(customerDTO.id());
         assertFalse(customerDTO.devices().isEmpty());
+    }
+
+    @Test
+    void getCustomerFromId_shouldReturnAPresentOptionalWithCustomerDTO() {
+        Long customerId = 1L;
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
+        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerFromId(customerId);
+        verify(customerRepository).findById(customerId);
+        verifyNoMoreInteractions(customerRepository);
+        assertTrue(optionalCustomerDTO.isPresent());
+    }
+
+    @Test
+    void getCustomerFromId_shouldReturnAnEmptyOptionalIfCustomerNotFound() {
+        Long customerId = 1L;
+        when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
+        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerFromId(customerId);
+        verify(customerRepository).findById(customerId);
+        verifyNoMoreInteractions(customerRepository);
+        assertFalse(optionalCustomerDTO.isPresent());
     }
 }
