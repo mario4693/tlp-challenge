@@ -18,6 +18,14 @@ public class Device {
     @Enumerated(EnumType.STRING)
     private DeviceState state;
 
+    private Device() {
+    }
+
+    public Device(UUID id, DeviceState state) {
+        this.id = id;
+        this.state = state;
+    }
+
     public enum DeviceState {
         ACTIVE,
         INACTIVE,

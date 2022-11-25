@@ -1,11 +1,20 @@
 package com.tlp.challenge.service;
 
 import com.tlp.challenge.builder.CustomerBuilder;
+import com.tlp.challenge.builder.DeviceBuilder;
 import com.tlp.challenge.dto.CustomerDTO;
+import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.entity.Customer;
+import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.Collections.emptyList;
 
 @Service
 public class CustomerService {
@@ -23,13 +32,25 @@ public class CustomerService {
     }
 
     Customer toCustomer(SignupDTO signupDTO){
+
+        List<Device> devices = toListOfDevices(signupDTO.devices());
         return new CustomerBuilder()
                 .withName(signupDTO.name())
                 .withSurname(signupDTO.surname())
                 .withFiscalCode(signupDTO.fiscalCode())
                 .withAddress(signupDTO.address())
-                .withDevices(signupDTO.devices())
+                .withDevices(devices)
                 .build();
+    }
+
+    public static List<Device> toListOfDevices(DeviceDTO[] devices) {
+        return Objects.nonNull(devices) ?
+                Arrays.stream(devices).map(device -> new DeviceBuilder().withId(device.id()).withState(device.state()).build()).toList()
+                : emptyList();
+    }
+
+    private List<DeviceDTO> toDeviceDTO(List<Device> devices) {
+        return devices.stream().map(device -> new DeviceDTO(device.getId(), device.getState())).toList();
     }
 
     CustomerDTO toCustomerDTO(Customer customer){
@@ -39,6 +60,7 @@ public class CustomerService {
                 .withSurname(customer.getSurname())
                 .withFiscalCode(customer.getFiscalCode())
                 .withAddress(customer.getAddress())
+                .withDevices(toDeviceDTO(customer.getDevices()))
                 .build();
     }
 }

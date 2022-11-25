@@ -35,8 +35,7 @@ public class Customer {
         this.surname = surname;
         this.fiscalCode = fiscalCode;
         this.address = address;
-        if (devices!=null && !devices.isEmpty())
-            this.devices=devices;
+        this.devices=devices;
     }
 
     private Customer() {

@@ -2,8 +2,10 @@ package com.tlp.challenge.service;
 
 import com.tlp.challenge.builder.CustomerBuilder;
 import com.tlp.challenge.dto.CustomerDTO;
+import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.entity.Customer;
+import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,8 +13,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.List;
+import java.util.UUID;
+
+import static com.tlp.challenge.service.CustomerService.toListOfDevices;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,8 +27,12 @@ class CustomerServiceTest {
     private CustomerRepository customerRepository;
     private CustomerService customerService;
 
-    private final static SignupDTO aSignupDTO = new SignupDTO("Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
-    private final static CustomerDTO aCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
+//    private final static SignupDTO aSignupDTO = new SignupDTO("Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
+    private final static DeviceDTO device1 = new DeviceDTO(UUID.randomUUID(), Device.DeviceState.INACTIVE);
+    private final static DeviceDTO device2 = new DeviceDTO(UUID.randomUUID(), Device.DeviceState.LOST);
+    private final static List<DeviceDTO> devices = List.of(device1, device2);
+    private final static SignupDTO aSignupDTO = new SignupDTO("Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano", device1, device2);
+    private final static CustomerDTO aCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano", devices);
 
     private final Customer aCustomer = new CustomerBuilder()
             .withId(1L)
@@ -31,6 +40,7 @@ class CustomerServiceTest {
             .withSurname("Altamura")
             .withFiscalCode("ABCDEF93H01A123B")
             .withAddress("My address 9, Milano")
+            .withDevices(toListOfDevices(new DeviceDTO[]{device1, device2}))
             .build();
 
     @BeforeEach
@@ -46,5 +56,6 @@ class CustomerServiceTest {
         verifyNoMoreInteractions(customerRepository);
         assertEquals(aCustomerDTO, customerDTO);
         assertNotNull(customerDTO.id());
+        assertFalse(customerDTO.devices().isEmpty());
     }
 }

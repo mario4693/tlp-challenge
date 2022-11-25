@@ -3,7 +3,6 @@ package com.tlp.challenge.builder;
 import com.tlp.challenge.entity.Customer;
 import com.tlp.challenge.entity.Device;
 
-import java.util.Collections;
 import java.util.List;
 
 public class CustomerBuilder {
@@ -39,8 +38,8 @@ public class CustomerBuilder {
         return this;
     }
 
-    public CustomerBuilder withDevices(Device... devices) {
-        this.devices = devices!=null ? List.of(devices) : Collections.emptyList();
+    public CustomerBuilder withDevices(List<Device> devices) {
+        this.devices = devices;
         return this;
     }
 
