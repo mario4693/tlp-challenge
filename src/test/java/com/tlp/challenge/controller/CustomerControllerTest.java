@@ -74,4 +74,15 @@ class CustomerControllerTest {
         assertTrue(Objects.nonNull(response.getBody()));
         assertEquals(newCustomerAddress, response.getBody().address());
     }
+
+    @Test
+    void editCustomerAddress_shouldReturnNullBodyIfCustomerNotFound(){
+        Long customerId = 1L;
+        String newCustomerAddress = "My address 1, Bergamo";
+        when(customerService.editCustomerAddress(customerId, newCustomerAddress)).thenReturn(Optional.empty());
+        ResponseEntity<CustomerDTO> response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
+        verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
+        verifyNoMoreInteractions(customerService);
+        assertTrue(Objects.isNull(response.getBody()));
+    }
 }
