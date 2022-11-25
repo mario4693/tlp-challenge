@@ -16,4 +16,8 @@ public class DeviceService {
     public boolean isDevicePresent(UUID deviceId) {
         return deviceRepository.findById(deviceId).isPresent();
     }
+
+    public boolean deleteDeviceById(UUID deviceId) {
+        return false;
+    }
 }

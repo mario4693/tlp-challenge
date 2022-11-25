@@ -2,10 +2,7 @@ package com.tlp.challenge.controller;
 
 import com.tlp.challenge.service.DeviceService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -18,8 +15,13 @@ public class DeviceController {
         this.deviceService = deviceService;
     }
 
-    @GetMapping(value = {"{uuid}"})
+    @GetMapping(value = "{uuid}")
     public ResponseEntity<Void> isDevicePresent(@PathVariable UUID uuid) {
-        return deviceService.isDevicePresent(uuid) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+        return deviceService.isDevicePresent(uuid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping(value = "uuid")
+    public ResponseEntity<Void> deleteDevice(UUID uuid) {
+        return deviceService.deleteDeviceById(uuid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

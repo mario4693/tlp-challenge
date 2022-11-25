@@ -34,7 +34,7 @@ class DeviceControllerTest {
         ResponseEntity<Void> response = deviceController.isDevicePresent(deviceId);
         verify(deviceService).isDevicePresent(deviceId);
         verifyNoMoreInteractions(deviceService);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     }
 
     @Test
@@ -43,6 +43,26 @@ class DeviceControllerTest {
         when(deviceService.isDevicePresent(deviceId)).thenReturn(false);
         ResponseEntity<Void> response = deviceController.isDevicePresent(deviceId);
         verify(deviceService).isDevicePresent(deviceId);
+        verifyNoMoreInteractions(deviceService);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void deleteDevice_shouldReturnNoContentIfDeviceCorrectlyDeleted(){
+        UUID deviceId = UUID.randomUUID();
+        when(deviceService.deleteDeviceById(deviceId)).thenReturn(true);
+        ResponseEntity<Void> response = deviceController.deleteDevice(deviceId);
+        verify(deviceService).deleteDeviceById(deviceId);
+        verifyNoMoreInteractions(deviceService);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    void deleteDevice_shouldReturnNotFoundIfDeviceToDeleteDoesNotExists(){
+        UUID deviceId = UUID.randomUUID();
+        when(deviceService.deleteDeviceById(deviceId)).thenReturn(false);
+        ResponseEntity<Void> response = deviceController.deleteDevice(deviceId);
+        verify(deviceService).deleteDeviceById(deviceId);
         verifyNoMoreInteractions(deviceService);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
