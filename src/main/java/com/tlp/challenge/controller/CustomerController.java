@@ -30,7 +30,7 @@ public class CustomerController {
 
     @GetMapping(value = "{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
-        Optional<CustomerDTO> optionalCustomer = customerService.getCustomerFromId(id);
+        Optional<CustomerDTO> optionalCustomer = customerService.getCustomerDTOFromId(id);
         return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

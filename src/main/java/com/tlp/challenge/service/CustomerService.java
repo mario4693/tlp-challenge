@@ -65,7 +65,7 @@ public class CustomerService {
                 .build();
     }
 
-    public Optional<CustomerDTO> getCustomerFromId(Long customerId) {
+    public Optional<CustomerDTO> getCustomerDTOFromId(Long customerId) {
         Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
         return optionalCustomer.map(this::toCustomerDTO);
     }

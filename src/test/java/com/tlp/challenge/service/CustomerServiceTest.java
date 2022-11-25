@@ -64,7 +64,7 @@ class CustomerServiceTest {
     void getCustomerFromId_shouldReturnAPresentOptionalWithCustomerDTO() {
         Long customerId = 1L;
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
-        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerFromId(customerId);
+        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerDTOFromId(customerId);
         verify(customerRepository).findById(customerId);
         verifyNoMoreInteractions(customerRepository);
         assertTrue(optionalCustomerDTO.isPresent());
@@ -74,7 +74,7 @@ class CustomerServiceTest {
     void getCustomerFromId_shouldReturnAnEmptyOptionalIfCustomerNotFound() {
         Long customerId = 1L;
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
-        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerFromId(customerId);
+        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerDTOFromId(customerId);
         verify(customerRepository).findById(customerId);
         verifyNoMoreInteractions(customerRepository);
         assertFalse(optionalCustomerDTO.isPresent());

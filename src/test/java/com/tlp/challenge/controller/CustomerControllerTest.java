@@ -45,9 +45,9 @@ class CustomerControllerTest {
     @Test
     void getCustomer_shouldReturnAnExistentCustomer(){
         Long customerId = 1L;
-        when(customerService.getCustomerFromId(customerId)).thenReturn(Optional.of(aCustomerDTO));
+        when(customerService.getCustomerDTOFromId(customerId)).thenReturn(Optional.of(aCustomerDTO));
         ResponseEntity<CustomerDTO> response = customerController.getCustomer(customerId);
-        verify(customerService).getCustomerFromId(customerId);
+        verify(customerService).getCustomerDTOFromId(customerId);
         verifyNoMoreInteractions(customerService);
         assertEquals(aCustomerDTO, response.getBody());
     }
@@ -55,9 +55,9 @@ class CustomerControllerTest {
     @Test
     void getCustomer_shouldReturnNullBody(){
         Long customerId = 1L;
-        when(customerService.getCustomerFromId(customerId)).thenReturn(Optional.empty());
+        when(customerService.getCustomerDTOFromId(customerId)).thenReturn(Optional.empty());
         ResponseEntity<CustomerDTO> response = customerController.getCustomer(customerId);
-        verify(customerService).getCustomerFromId(customerId);
+        verify(customerService).getCustomerDTOFromId(customerId);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.isNull(response.getBody()));
     }
