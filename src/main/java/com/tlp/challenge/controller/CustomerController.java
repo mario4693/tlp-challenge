@@ -1,6 +1,7 @@
 package com.tlp.challenge.controller;
 
 import com.tlp.challenge.dto.CustomerDTO;
+import com.tlp.challenge.dto.EditCustomerAddressDTO;
 import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.service.CustomerService;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,12 @@ public class CustomerController {
     @GetMapping(value = "{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
         Optional<CustomerDTO> optionalCustomer = customerService.getCustomerFromId(id);
+        return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<CustomerDTO> editCustomerAddress(@PathVariable Long id, @Valid @RequestBody EditCustomerAddressDTO editCustomerAddressDTO) {
+        Optional<CustomerDTO> optionalCustomer = customerService.editCustomerAddress(id, editCustomerAddressDTO.address());
         return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

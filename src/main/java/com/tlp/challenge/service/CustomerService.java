@@ -69,4 +69,8 @@ public class CustomerService {
         Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
         return optionalCustomer.map(this::toCustomerDTO);
     }
+
+    public Optional<CustomerDTO> editCustomerAddress(Long id, String address) {
+        return Optional.empty();
+    }
 }

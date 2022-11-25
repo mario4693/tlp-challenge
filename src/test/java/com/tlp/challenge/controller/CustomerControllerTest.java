@@ -1,6 +1,7 @@
 package com.tlp.challenge.controller;
 
 import com.tlp.challenge.dto.CustomerDTO;
+import com.tlp.challenge.dto.EditCustomerAddressDTO;
 import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -60,5 +60,19 @@ class CustomerControllerTest {
         verify(customerService).getCustomerFromId(customerId);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.isNull(response.getBody()));
+    }
+
+    @Test
+    void editCustomerAddress_shouldReturnUpdatedCustomer(){
+        Long customerId = 1L;
+        String newCustomerAddress = "My address 1, Bergamo";
+        CustomerDTO updatedCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura","ABCDEF93H01A123B", "My address 1, Bergamo", emptyList());
+        when(customerService.editCustomerAddress(customerId, newCustomerAddress)).thenReturn(Optional.of(updatedCustomerDTO));
+        ResponseEntity<CustomerDTO> response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
+        verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
+        verifyNoMoreInteractions(customerService);
+        assertTrue(Objects.nonNull(response.getBody()));
+        assertEquals(newCustomerAddress, response.getBody().address());
+        assertNotEquals(aCustomerDTO.address(), response.getBody().address());
     }
 }
