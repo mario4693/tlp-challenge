@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
@@ -62,5 +63,9 @@ public class CustomerService {
                 .withAddress(customer.getAddress())
                 .withDevices(toDeviceDTO(customer.getDevices()))
                 .build();
+    }
+
+    public Optional<CustomerDTO> getCustomerFromId(Long customerId) {
+        return null;
     }
 }
