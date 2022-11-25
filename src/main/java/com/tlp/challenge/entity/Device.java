@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, length = 16)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
