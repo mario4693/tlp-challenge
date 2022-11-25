@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import static java.util.Collections.emptyList;
 
@@ -80,9 +79,5 @@ public class CustomerService {
         customer.setAddress(newAddress);
         customerRepository.save(customer);
         return customer;
-    }
-
-    public Optional<DeviceDTO> getDeviceFromId(Long customerId, UUID deviceId) {
-        return null;
     }
 }
