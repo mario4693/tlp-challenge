@@ -51,7 +51,7 @@ public class CustomerService {
                 : emptyList();
     }
 
-    private List<DeviceDTO> toDeviceDTO(List<Device> devices) {
+    private List<DeviceDTO> toListOfDevicesDTO(List<Device> devices) {
         return devices.stream().map(device -> new DeviceDTO(device.getId(), device.getState())).toList();
     }
 
@@ -62,7 +62,7 @@ public class CustomerService {
                 .withSurname(customer.getSurname())
                 .withFiscalCode(customer.getFiscalCode())
                 .withAddress(customer.getAddress())
-                .withDevices(toDeviceDTO(customer.getDevices()))
+                .withDevices(toListOfDevicesDTO(customer.getDevices()))
                 .build();
     }
 
