@@ -1,10 +1,8 @@
 package com.tlp.challenge.controller;
 
 import com.tlp.challenge.dto.CustomerDTO;
-import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditCustomerAddressDTO;
 import com.tlp.challenge.dto.SignupDTO;
-import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.service.CustomerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +13,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,29 +83,6 @@ class CustomerControllerTest {
         when(customerService.editCustomerAddress(customerId, newCustomerAddress)).thenReturn(Optional.empty());
         ResponseEntity<CustomerDTO> response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
         verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
-        verifyNoMoreInteractions(customerService);
-        assertTrue(Objects.isNull(response.getBody()));
-    }
-
-    @Test
-    void getDevice_shouldReturnAnExistentDeviceById(){
-        Long customerId = 1L;
-        UUID deviceId = UUID.randomUUID();
-        DeviceDTO aDeviceDTO = new DeviceDTO(deviceId, Device.DeviceState.INACTIVE);
-        when(customerService.getDeviceFromId(customerId, deviceId)).thenReturn(Optional.of(aDeviceDTO));
-        ResponseEntity<DeviceDTO> response = customerController.getDevice(customerId, deviceId);
-        verify(customerService).getDeviceFromId(customerId, deviceId);
-        verifyNoMoreInteractions(customerService);
-        assertEquals(aDeviceDTO, response.getBody());
-    }
-
-    @Test
-    void getDevice_shouldReturnEmptyBodyWhenDeviceIdNotFound(){
-        Long customerId = 1L;
-        UUID deviceId = UUID.randomUUID();
-        when(customerService.getDeviceFromId(customerId, deviceId)).thenReturn(Optional.empty());
-        ResponseEntity<DeviceDTO> response = customerController.getDevice(customerId, deviceId);
-        verify(customerService).getDeviceFromId(customerId, deviceId);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.isNull(response.getBody()));
     }
