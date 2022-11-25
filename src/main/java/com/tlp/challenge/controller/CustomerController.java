@@ -1,6 +1,7 @@
 package com.tlp.challenge.controller;
 
 import com.tlp.challenge.dto.CustomerDTO;
+import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditCustomerAddressDTO;
 import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.service.CustomerService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -40,4 +42,9 @@ public class CustomerController {
         return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping(value = {"{id}/devices/{uuid}"})
+    public ResponseEntity<DeviceDTO> getDevice(@PathVariable Long id, @PathVariable UUID uuid) {
+        Optional<DeviceDTO> optionalDevice = customerService.getDeviceFromId(id, uuid);
+        return optionalDevice.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
