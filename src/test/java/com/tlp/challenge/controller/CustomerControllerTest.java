@@ -63,7 +63,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void editCustomerAddress_shouldReturnUpdatedCustomer(){
+    void editCustomerAddress_shouldReturnABodyWithUpdatedCustomer(){
         Long customerId = 1L;
         String newCustomerAddress = "My address 1, Bergamo";
         CustomerDTO updatedCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura","ABCDEF93H01A123B", "My address 1, Bergamo", emptyList());
@@ -73,6 +73,5 @@ class CustomerControllerTest {
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.nonNull(response.getBody()));
         assertEquals(newCustomerAddress, response.getBody().address());
-        assertNotEquals(aCustomerDTO.address(), response.getBody().address());
     }
 }

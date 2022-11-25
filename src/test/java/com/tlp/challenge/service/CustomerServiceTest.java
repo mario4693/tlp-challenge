@@ -79,4 +79,27 @@ class CustomerServiceTest {
         verifyNoMoreInteractions(customerRepository);
         assertFalse(optionalCustomerDTO.isPresent());
     }
+
+    @Test
+    void editCustomerAddress_shouldReturnACustomerDTOWithNewAddress() {
+        Long customerId = 1L;
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
+        String newCustomerAddress = "My address 1, Bergamo";
+        Customer updatedCustomer = new CustomerBuilder()
+                .withId(1L)
+                .withName("Mario")
+                .withSurname("Altamura")
+                .withFiscalCode("ABCDEF93H01A123B")
+                .withAddress(newCustomerAddress)
+                .withDevices(toListOfDevices(new DeviceDTO[]{device1, device2}))
+                .build();
+        when(customerRepository.save(any())).thenReturn(updatedCustomer);
+        Optional<CustomerDTO> updatedCustomerDTO = customerService.editCustomerAddress(customerId, newCustomerAddress);
+        verify(customerRepository).findById(customerId);
+        verify(customerRepository).save(any());
+        assertTrue(updatedCustomerDTO.isPresent());
+        assertFalse(updatedCustomerDTO.get().address().isEmpty());
+        assertEquals(newCustomerAddress, updatedCustomerDTO.get().address());
+        assertEquals(updatedCustomer.getAddress(), updatedCustomerDTO.get().address());
+    }
 }

@@ -70,7 +70,14 @@ public class CustomerService {
         return optionalCustomer.map(this::toCustomerDTO);
     }
 
-    public Optional<CustomerDTO> editCustomerAddress(Long id, String address) {
-        return Optional.empty();
+    public Optional<CustomerDTO> editCustomerAddress(Long id, String newAddress) {
+        Optional<Customer> optionalCustomer = customerRepository.findById(id);
+        return optionalCustomer.map(customer -> toCustomerDTO(updateCustomerAddress(customer, newAddress)));
+    }
+
+    private Customer updateCustomerAddress(Customer customer, String newAddress){
+        customer.setAddress(newAddress);
+        customerRepository.save(customer);
+        return customer;
     }
 }
