@@ -28,6 +28,7 @@ public class CustomerService {
 
     public CustomerDTO saveCustomer(SignupDTO signupDTO) {
         Customer aCustomer = toCustomer(signupDTO);
+        aCustomer.getDevices().forEach(device -> device.setCustomer(aCustomer));
         Customer savedCustomer = customerRepository.save(aCustomer);
         return toCustomerDTO(savedCustomer);
     }

@@ -26,7 +26,7 @@ public class Customer {
 
     private String address;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer")
     private List<Device> devices;
 
     public Customer(Long id, String name, String surname, String fiscalCode, String address, List<Device> devices) {

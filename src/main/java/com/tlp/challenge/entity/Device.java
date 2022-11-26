@@ -18,6 +18,10 @@ public class Device {
     @Enumerated(EnumType.STRING)
     private DeviceState state;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
+
     private Device() {
     }
 
