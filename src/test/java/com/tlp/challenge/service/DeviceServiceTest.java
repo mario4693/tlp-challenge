@@ -1,5 +1,6 @@
 package com.tlp.challenge.service;
 
+import com.tlp.challenge.builder.DeviceBuilder;
 import com.tlp.challenge.repository.DeviceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +28,23 @@ class DeviceServiceTest {
     }
 
     @Test
-    void isDevicePresent() {
+    void isDevicePresent_shouldReturnTrue() {
+        UUID deviceId = UUID.randomUUID();
+        when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(new DeviceBuilder().build()));
+        boolean isPresent = deviceService.isDevicePresent(deviceId);
+        verify(deviceRepository).findById(deviceId);
+        verifyNoMoreInteractions(deviceRepository);
+        assertTrue(isPresent);
+    }
+
+    @Test
+    void isDevicePresent_shouldReturnFalse() {
+        UUID deviceId = UUID.randomUUID();
+        when(deviceRepository.findById(deviceId)).thenReturn(Optional.empty());
+        boolean isPresent = deviceService.isDevicePresent(deviceId);
+        verify(deviceRepository).findById(deviceId);
+        verifyNoMoreInteractions(deviceRepository);
+        assertFalse(isPresent);
     }
 
     @Test
