@@ -1,8 +1,11 @@
 package com.tlp.challenge.service;
 
+import com.tlp.challenge.dto.DeviceDTO;
+import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -24,5 +27,9 @@ public class DeviceService {
             isDeleted = true;
         }
         return isDeleted;
+    }
+
+    public Optional<DeviceDTO> editDeviceState(UUID deviceId, Device.DeviceState state) {
+        return null;
     }
 }
