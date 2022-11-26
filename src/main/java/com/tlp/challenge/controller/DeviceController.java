@@ -13,7 +13,7 @@ import java.util.UUID;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping(value = "devices")
+@RequestMapping(value = "api/v1/devices")
 public class DeviceController {
     private final DeviceService deviceService;
 

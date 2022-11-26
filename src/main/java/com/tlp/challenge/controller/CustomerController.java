@@ -14,7 +14,7 @@ import java.util.Optional;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("customers")
+@RequestMapping("api/v1/customers")
 public class CustomerController {
     private final CustomerService customerService;
 
