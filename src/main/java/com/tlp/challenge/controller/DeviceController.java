@@ -20,8 +20,8 @@ public class DeviceController {
         return deviceService.isDevicePresent(uuid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping(value = "uuid")
-    public ResponseEntity<Void> deleteDevice(UUID uuid) {
+    @DeleteMapping(value = "{uuid}")
+    public ResponseEntity<Void> deleteDevice(@PathVariable UUID uuid) {
         return deviceService.deleteDeviceById(uuid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
