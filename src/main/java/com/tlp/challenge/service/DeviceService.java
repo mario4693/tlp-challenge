@@ -18,6 +18,11 @@ public class DeviceService {
     }
 
     public boolean deleteDeviceById(UUID deviceId) {
-        return false;
+        boolean isDeleted = false;
+        if(deviceRepository.existsById(deviceId)){
+            deviceRepository.deleteById(deviceId);
+            isDeleted = true;
+        }
+        return isDeleted;
     }
 }
