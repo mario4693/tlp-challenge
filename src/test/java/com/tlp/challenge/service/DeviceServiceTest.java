@@ -1,6 +1,8 @@
 package com.tlp.challenge.service;
 
 import com.tlp.challenge.builder.DeviceBuilder;
+import com.tlp.challenge.dto.DeviceDTO;
+import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.DeviceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,5 +68,34 @@ class DeviceServiceTest {
         verify(deviceRepository).existsById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertFalse(isDeleted);
+    }
+
+    @Test
+    void editDeviceState_shouldReturnADeviceDTOWithNewAddress(){
+        UUID deviceId = UUID.randomUUID();
+        Device.DeviceState oldState = Device.DeviceState.INACTIVE;
+        Device.DeviceState newDeviceState = Device.DeviceState.LOST;
+        Device oldDevice = new DeviceBuilder().withId(deviceId).withState(oldState).build();
+        Device newDevice = new DeviceBuilder().withId(deviceId).withState(newDeviceState).build();
+        when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(oldDevice));
+        when(deviceRepository.save(any())).thenReturn(newDevice);
+
+        Optional<DeviceDTO> optionalDeviceDTO = deviceService.editDeviceState(deviceId, newDeviceState);
+        verify(deviceRepository).findById(deviceId);
+        verify(deviceRepository).save(any());
+        assertTrue(optionalDeviceDTO.isPresent());
+        assertEquals(newDeviceState, optionalDeviceDTO.get().state());
+    }
+
+    @Test
+    void editDeviceState_shouldReturnAnEmptyOptionalIfDeviceNotFound(){
+        UUID deviceId = UUID.randomUUID();
+        Device.DeviceState newDeviceState = Device.DeviceState.LOST;
+        when(deviceRepository.findById(deviceId)).thenReturn(Optional.empty());
+
+        Optional<DeviceDTO> optionalDeviceDTO = deviceService.editDeviceState(deviceId, newDeviceState);
+        verify(deviceRepository).findById(deviceId);
+        verifyNoMoreInteractions(deviceRepository);
+        assertFalse(optionalDeviceDTO.isPresent());
     }
 }
