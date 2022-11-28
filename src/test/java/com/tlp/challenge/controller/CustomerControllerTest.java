@@ -8,7 +8,6 @@ import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditCustomerDevicesDTO;
 import com.tlp.challenge.service.CustomerService;
 import com.tlp.challenge.entity.Device.DeviceState;
-import com.tlp.challenge.service.DeviceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +29,6 @@ import static org.mockito.Mockito.*;
 class CustomerControllerTest {
     @Mock
     private CustomerService customerService;
-    @Mock
-    private DeviceService deviceService;
 
     private CustomerController customerController;
 
@@ -40,7 +37,7 @@ class CustomerControllerTest {
 
     @BeforeEach
     void setUp() {
-        customerController = new CustomerController(customerService, deviceService);
+        customerController = new CustomerController(customerService);
     }
 
     @Test
@@ -103,10 +100,10 @@ class CustomerControllerTest {
         var newAddedDevice = new DeviceDTO(UUID.randomUUID(), DeviceState.INACTIVE);
         var editCustomerDevices = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDevice));
         var aCustomerDTOWithADevice = new CustomerDTO(customerId,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano", List.of(newAddedDevice));
-        when(deviceService.editCustomerDevices(editCustomerDevices)).thenReturn(Optional.of(aCustomerDTOWithADevice));
+        when(customerService.updateCustomerDevices(editCustomerDevices)).thenReturn(Optional.of(aCustomerDTOWithADevice));
         var response = customerController.addDevicesToCustomer(editCustomerDevices);
-        verify(deviceService, only()).editCustomerDevices(editCustomerDevices);
-        verifyNoMoreInteractions(deviceService);
+        verify(customerService, only()).updateCustomerDevices(editCustomerDevices);
+        verifyNoMoreInteractions(customerService);
         assertNotNull(response.getBody());
         assertFalse(response.getBody().devices().isEmpty());
         assertNotNull(newAddedDevice.id());
@@ -117,10 +114,10 @@ class CustomerControllerTest {
         var customerId = 1L;
         var newCustomerDevice = new NewDeviceDTO(DeviceState.INACTIVE);
         var editCustomerDevices = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDevice));
-        when(deviceService.editCustomerDevices(editCustomerDevices)).thenReturn(Optional.empty());
+        when(customerService.updateCustomerDevices(editCustomerDevices)).thenReturn(Optional.empty());
         var response = customerController.addDevicesToCustomer(editCustomerDevices);
-        verify(deviceService).editCustomerDevices(editCustomerDevices);
-        verifyNoMoreInteractions(deviceService);
+        verify(customerService).updateCustomerDevices(editCustomerDevices);
+        verifyNoMoreInteractions(customerService);
         assertNull(response.getBody());
     }
 }

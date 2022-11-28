@@ -16,11 +16,9 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("api/v1/customers")
 public class CustomerController {
     private final CustomerService customerService;
-    private final DeviceService deviceService;
 
-    public CustomerController(CustomerService customerService, DeviceService deviceService) {
+    public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
-        this.deviceService = deviceService;
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -42,7 +40,7 @@ public class CustomerController {
 
     @PatchMapping(value = "{id}/devices",consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerDTO> addDevicesToCustomer(@Valid @RequestBody EditCustomerDevicesDTO editCustomerDevicesDTO) {
-        Optional<CustomerDTO> optionalCustomer = deviceService.editCustomerDevices(editCustomerDevicesDTO);
+        Optional<CustomerDTO> optionalCustomer = customerService.updateCustomerDevices(editCustomerDevicesDTO);
         return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

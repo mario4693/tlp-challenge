@@ -4,6 +4,7 @@ import com.tlp.challenge.builder.CustomerBuilder;
 import com.tlp.challenge.builder.DeviceBuilder;
 import com.tlp.challenge.dto.CustomerDTO;
 import com.tlp.challenge.dto.DeviceDTO;
+import com.tlp.challenge.dto.EditCustomerDevicesDTO;
 import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.entity.Customer;
 import com.tlp.challenge.entity.Device;
@@ -78,7 +79,10 @@ public class CustomerService {
 
     private Customer updateCustomerAddress(Customer customer, String newAddress){
         customer.setAddress(newAddress);
-        customerRepository.save(customer);
-        return customer;
+        return customerRepository.save(customer);
+    }
+
+    public Optional<CustomerDTO> updateCustomerDevices(EditCustomerDevicesDTO newCustomerDevices) {
+        return null;
     }
 }
