@@ -2,10 +2,7 @@ package com.tlp.challenge.service;
 
 import com.tlp.challenge.builder.CustomerBuilder;
 import com.tlp.challenge.builder.DeviceBuilder;
-import com.tlp.challenge.dto.CustomerDTO;
-import com.tlp.challenge.dto.DeviceDTO;
-import com.tlp.challenge.dto.EditCustomerDevicesDTO;
-import com.tlp.challenge.dto.SignupDTO;
+import com.tlp.challenge.dto.*;
 import com.tlp.challenge.entity.Customer;
 import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.CustomerRepository;
@@ -15,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 
@@ -82,7 +80,21 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    public Optional<CustomerDTO> updateCustomerDevices(EditCustomerDevicesDTO newCustomerDevices) {
-        return null;
+    private Customer updateCustomerDevices(Customer customer, List<Device> newDevices){
+        customer.setDevices(newDevices);
+        customer.getDevices().forEach(device -> device.setCustomer(customer));
+        return customerRepository.save(customer);
+    }
+
+    public Optional<CustomerDTO> updateCustomerDevices(EditCustomerDevicesDTO updateCustomerDevicesDTO) {
+        var optionalCustomer = customerRepository.findById(updateCustomerDevicesDTO.customerId());
+        return optionalCustomer
+                .map(customer -> toCustomerDTO(updateCustomerDevices(customer, toListOfDevices(updateCustomerDevicesDTO.devices()))));
+    }
+
+    private List<Device> toListOfDevices(List<NewDeviceDTO> newDevicesDTO){
+        return newDevicesDTO.stream()
+                .map(newDeviceDTO -> new DeviceBuilder().withState(newDeviceDTO.state()).build())
+                .collect(Collectors.toList());
     }
 }
