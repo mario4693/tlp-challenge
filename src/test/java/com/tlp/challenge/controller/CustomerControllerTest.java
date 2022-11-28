@@ -3,7 +3,12 @@ package com.tlp.challenge.controller;
 import com.tlp.challenge.dto.CustomerDTO;
 import com.tlp.challenge.dto.EditCustomerAddressDTO;
 import com.tlp.challenge.dto.SignupDTO;
+import com.tlp.challenge.dto.NewDeviceDTO;
+import com.tlp.challenge.dto.DeviceDTO;
+import com.tlp.challenge.dto.EditCustomerDevicesDTO;
 import com.tlp.challenge.service.CustomerService;
+import com.tlp.challenge.entity.Device.DeviceState;
+import com.tlp.challenge.service.DeviceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,18 +16,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerControllerTest {
     @Mock
     private CustomerService customerService;
+    @Mock
+    private DeviceService deviceService;
 
     private CustomerController customerController;
 
@@ -31,13 +40,13 @@ class CustomerControllerTest {
 
     @BeforeEach
     void setUp() {
-        customerController = new CustomerController(customerService);
+        customerController = new CustomerController(customerService, deviceService);
     }
 
     @Test
     void createCustomer_shouldReturnANewCustomer(){
         when(customerService.saveCustomer(aSignupDTO)).thenReturn(aCustomerDTO);
-        ResponseEntity<CustomerDTO> response = customerController.createCustomer(aSignupDTO);
+        var response = customerController.createCustomer(aSignupDTO);
         verify(customerService, only()).saveCustomer(aSignupDTO);
         verifyNoMoreInteractions(customerService);
         assertEquals(aCustomerDTO, response.getBody());
@@ -45,9 +54,9 @@ class CustomerControllerTest {
 
     @Test
     void getCustomer_shouldReturnAnExistentCustomer(){
-        Long customerId = 1L;
+        var customerId = 1L;
         when(customerService.getCustomerDTOFromId(customerId)).thenReturn(Optional.of(aCustomerDTO));
-        ResponseEntity<CustomerDTO> response = customerController.getCustomer(customerId);
+        var response = customerController.getCustomer(customerId);
         verify(customerService).getCustomerDTOFromId(customerId);
         verifyNoMoreInteractions(customerService);
         assertEquals(aCustomerDTO, response.getBody());
@@ -55,7 +64,7 @@ class CustomerControllerTest {
 
     @Test
     void getCustomer_shouldReturnNullBody(){
-        Long customerId = 1L;
+        var customerId = 1L;
         when(customerService.getCustomerDTOFromId(customerId)).thenReturn(Optional.empty());
         ResponseEntity<CustomerDTO> response = customerController.getCustomer(customerId);
         verify(customerService).getCustomerDTOFromId(customerId);
@@ -65,11 +74,11 @@ class CustomerControllerTest {
 
     @Test
     void editCustomerAddress_shouldReturnABodyWithUpdatedCustomer(){
-        Long customerId = 1L;
-        String newCustomerAddress = "My address 1, Bergamo";
-        CustomerDTO updatedCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura","ABCDEF93H01A123B", "My address 1, Bergamo", emptyList());
+        var customerId = 1L;
+        var newCustomerAddress = "My address 1, Bergamo";
+        var updatedCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura","ABCDEF93H01A123B", "My address 1, Bergamo", emptyList());
         when(customerService.editCustomerAddress(customerId, newCustomerAddress)).thenReturn(Optional.of(updatedCustomerDTO));
-        ResponseEntity<CustomerDTO> response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
+        var response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
         verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.nonNull(response.getBody()));
@@ -78,12 +87,40 @@ class CustomerControllerTest {
 
     @Test
     void editCustomerAddress_shouldReturnNullBodyIfCustomerNotFound(){
-        Long customerId = 1L;
+        var customerId = 1L;
         String newCustomerAddress = "My address 1, Bergamo";
         when(customerService.editCustomerAddress(customerId, newCustomerAddress)).thenReturn(Optional.empty());
-        ResponseEntity<CustomerDTO> response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
+        var response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
         verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.isNull(response.getBody()));
+    }
+
+    @Test
+    void addDevicesToCustomer_shouldReturnACustomerWithTheNewDevice(){
+        var customerId = 1L;
+        var newCustomerDevice = new NewDeviceDTO(DeviceState.INACTIVE);
+        var newAddedDevice = new DeviceDTO(UUID.randomUUID(), DeviceState.INACTIVE);
+        var editCustomerDevices = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDevice));
+        var aCustomerDTOWithADevice = new CustomerDTO(customerId,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano", List.of(newAddedDevice));
+        when(deviceService.editCustomerDevices(editCustomerDevices)).thenReturn(Optional.of(aCustomerDTOWithADevice));
+        var response = customerController.addDevicesToCustomer(editCustomerDevices);
+        verify(deviceService, only()).editCustomerDevices(editCustomerDevices);
+        verifyNoMoreInteractions(deviceService);
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().devices().isEmpty());
+        assertNotNull(newAddedDevice.id());
+    }
+
+    @Test
+    void addDevicesToCustomer_shouldReturnNullBodyIfCustomerNotFound(){
+        var customerId = 1L;
+        var newCustomerDevice = new NewDeviceDTO(DeviceState.INACTIVE);
+        var editCustomerDevices = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDevice));
+        when(deviceService.editCustomerDevices(editCustomerDevices)).thenReturn(Optional.empty());
+        var response = customerController.addDevicesToCustomer(editCustomerDevices);
+        verify(deviceService).editCustomerDevices(editCustomerDevices);
+        verifyNoMoreInteractions(deviceService);
+        assertNull(response.getBody());
     }
 }
