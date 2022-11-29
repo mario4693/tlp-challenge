@@ -1,8 +1,8 @@
 package com.tlp.challenge.controller;
 
 import com.tlp.challenge.dto.*;
+import com.tlp.challenge.exception.CustomerDevicesNotUpdatable;
 import com.tlp.challenge.service.CustomerService;
-import com.tlp.challenge.service.DeviceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,7 +40,12 @@ public class CustomerController {
 
     @PatchMapping(value = "{id}/devices",consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerDTO> addDevicesToCustomer(@Valid @RequestBody EditCustomerDevicesDTO editCustomerDevicesDTO) {
-        Optional<CustomerDTO> optionalCustomer = customerService.updateCustomerDevices(editCustomerDevicesDTO);
+        Optional<CustomerDTO> optionalCustomer;
+        try {
+            optionalCustomer = customerService.updateCustomerDevices(editCustomerDevicesDTO);
+        } catch (CustomerDevicesNotUpdatable e) {
+            return ResponseEntity.unprocessableEntity().build();
+        }
         return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

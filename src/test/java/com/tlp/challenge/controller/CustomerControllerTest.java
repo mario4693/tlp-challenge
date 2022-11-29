@@ -6,6 +6,7 @@ import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.dto.NewDeviceDTO;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditCustomerDevicesDTO;
+import com.tlp.challenge.exception.CustomerDevicesNotUpdatable;
 import com.tlp.challenge.service.CustomerService;
 import com.tlp.challenge.entity.Device.DeviceState;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,7 +95,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void addDevicesToCustomer_shouldReturnACustomerWithTheNewDevice(){
+    void addDevicesToCustomer_shouldReturnACustomerWithTheNewDevice() throws CustomerDevicesNotUpdatable {
         var customerId = 1L;
         var newCustomerDevice = new NewDeviceDTO(DeviceState.INACTIVE);
         var newAddedDevice = new DeviceDTO(UUID.randomUUID(), DeviceState.INACTIVE);
@@ -110,7 +111,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    void addDevicesToCustomer_shouldReturnNullBodyIfCustomerNotFound(){
+    void addDevicesToCustomer_shouldReturnNullBodyIfCustomerNotFound() throws CustomerDevicesNotUpdatable {
         var customerId = 1L;
         var newCustomerDevice = new NewDeviceDTO(DeviceState.INACTIVE);
         var editCustomerDevices = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDevice));
