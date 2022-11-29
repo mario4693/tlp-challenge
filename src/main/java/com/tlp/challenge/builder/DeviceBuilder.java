@@ -1,5 +1,6 @@
 package com.tlp.challenge.builder;
 
+import com.tlp.challenge.entity.Customer;
 import com.tlp.challenge.entity.Device;
 
 import java.util.UUID;
@@ -7,6 +8,7 @@ import java.util.UUID;
 public class DeviceBuilder {
     private UUID id;
     private Device.DeviceState state;
+    private Customer customer;
 
     public DeviceBuilder withId(UUID id) {
         this.id = id;
@@ -18,7 +20,12 @@ public class DeviceBuilder {
         return this;
     }
 
+    public DeviceBuilder withCustomer(Customer customer) {
+        this.customer = customer;
+        return this;
+    }
+
     public Device build() {
-        return new Device(id, state);
+        return new Device(id, state, customer);
     }
 }

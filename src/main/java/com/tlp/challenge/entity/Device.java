@@ -18,16 +18,17 @@ public class Device {
     @Enumerated(EnumType.STRING)
     private DeviceState state;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     private Device() {
     }
 
-    public Device(UUID id, DeviceState state) {
+    public Device(UUID id, DeviceState state, Customer customer) {
         this.id = id;
         this.state = state;
+        this.customer=customer;
     }
 
     public enum DeviceState {

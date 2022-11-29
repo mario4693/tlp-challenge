@@ -1,9 +1,6 @@
 package com.tlp.challenge.builder;
 
 import com.tlp.challenge.entity.Customer;
-import com.tlp.challenge.entity.Device;
-
-import java.util.List;
 
 public class CustomerBuilder {
     private Long id;
@@ -11,7 +8,6 @@ public class CustomerBuilder {
     private String surname;
     private String fiscalCode;
     private String address;
-    private List<Device> devices;
 
     public CustomerBuilder withId(Long id) {
         this.id = id;
@@ -38,12 +34,7 @@ public class CustomerBuilder {
         return this;
     }
 
-    public CustomerBuilder withDevices(List<Device> devices) {
-        this.devices = devices;
-        return this;
-    }
-
     public Customer build() {
-        return new Customer(id, name, surname, fiscalCode, address, devices);
+        return new Customer(id, name, surname, fiscalCode, address);
     }
 }
