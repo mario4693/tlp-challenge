@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.tlp.challenge.util.Utils.toListOfDevices;
+import static com.tlp.challenge.util.Utils.toListOfDevicesDTO;
+
 @Service
 public class DeviceService {
     private final DeviceRepository deviceRepository;
@@ -46,6 +49,7 @@ public class DeviceService {
     }
 
     public List<DeviceDTO> saveDevices(NewDevicesDTO newDevicesDTO) {
-        return null;
+        var savedDevices = deviceRepository.saveAll(toListOfDevices(newDevicesDTO.devices()));
+        return toListOfDevicesDTO(savedDevices);
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.tlp.challenge.service.CustomerService.toListOfDevices;
+import static com.tlp.challenge.util.Utils.toListOfDevices;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

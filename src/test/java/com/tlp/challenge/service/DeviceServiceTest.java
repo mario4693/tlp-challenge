@@ -2,6 +2,7 @@ package com.tlp.challenge.service;
 
 import com.tlp.challenge.builder.DeviceBuilder;
 import com.tlp.challenge.dto.DeviceDTO;
+import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.DeviceRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -97,5 +99,23 @@ class DeviceServiceTest {
         verify(deviceRepository).findById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertFalse(optionalDeviceDTO.isPresent());
+    }
+
+    @Test
+    void saveDevices_shouldReturnNewSavedDevices() {
+        var UUID_1 = UUID.randomUUID();
+        var UUID_2 = UUID.randomUUID();
+        var deviceDTO1 = new DeviceDTO(UUID_1, Device.DeviceState.INACTIVE);
+        var deviceDTO2 = new DeviceDTO(UUID_2, Device.DeviceState.LOST);
+        var device1 = new DeviceBuilder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).build();
+        var device2 = new DeviceBuilder().withId(UUID_2).withState(Device.DeviceState.LOST).build();
+        var devices = List.of(device1, device2);
+        when(deviceRepository.saveAll(anyList())).thenReturn(devices);
+        var newDevicesDTO = new NewDevicesDTO(List.of(deviceDTO1, deviceDTO2));
+        var savedDevicesDTO = deviceService.saveDevices(newDevicesDTO);
+        verify(deviceRepository).saveAll(anyList());
+        verifyNoMoreInteractions(deviceRepository);
+        assertFalse(savedDevicesDTO.isEmpty());
+        assertEquals(2, savedDevicesDTO.size());
     }
 }
