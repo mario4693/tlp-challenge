@@ -99,11 +99,11 @@ class CustomerControllerTest {
         var customerId = 1L;
         var newCustomerDevice = new NewDeviceDTO(DeviceState.INACTIVE);
         var newAddedDevice = new DeviceDTO(UUID.randomUUID(), DeviceState.INACTIVE);
-        var editCustomerDevices = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDevice));
+        var editCustomerDevices = new EditCustomerDevicesDTO(List.of(newCustomerDevice));
         var aCustomerDTOWithADevice = new CustomerDTO(customerId,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano", List.of(newAddedDevice));
-        when(customerService.updateCustomerDevices(editCustomerDevices)).thenReturn(Optional.of(aCustomerDTOWithADevice));
-        var response = customerController.addDevicesToCustomer(editCustomerDevices);
-        verify(customerService, only()).updateCustomerDevices(editCustomerDevices);
+        when(customerService.updateCustomerDevices(customerId, editCustomerDevices)).thenReturn(Optional.of(aCustomerDTOWithADevice));
+        var response = customerController.addDevicesToCustomer(customerId, editCustomerDevices);
+        verify(customerService, only()).updateCustomerDevices(customerId, editCustomerDevices);
         verifyNoMoreInteractions(customerService);
         assertNotNull(response.getBody());
         assertFalse(response.getBody().devices().isEmpty());
@@ -114,10 +114,10 @@ class CustomerControllerTest {
     void addDevicesToCustomer_shouldReturnNullBodyIfCustomerNotFound() throws CustomerDevicesNotUpdatable {
         var customerId = 1L;
         var newCustomerDevice = new NewDeviceDTO(DeviceState.INACTIVE);
-        var editCustomerDevices = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDevice));
-        when(customerService.updateCustomerDevices(editCustomerDevices)).thenReturn(Optional.empty());
-        var response = customerController.addDevicesToCustomer(editCustomerDevices);
-        verify(customerService).updateCustomerDevices(editCustomerDevices);
+        var editCustomerDevices = new EditCustomerDevicesDTO(List.of(newCustomerDevice));
+        when(customerService.updateCustomerDevices(customerId, editCustomerDevices)).thenReturn(Optional.empty());
+        var response = customerController.addDevicesToCustomer(customerId, editCustomerDevices);
+        verify(customerService).updateCustomerDevices(customerId, editCustomerDevices);
         verifyNoMoreInteractions(customerService);
         assertNull(response.getBody());
     }

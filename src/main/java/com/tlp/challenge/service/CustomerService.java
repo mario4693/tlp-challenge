@@ -104,45 +104,47 @@ public class CustomerService {
 
     //    private void updateCustomerDevices(Customer customer, List<Device> newDevices){
     private void updateCustomerDevices(Customer customer, List<Device> newDevices){
-        //TODO fix to get updated device
         newDevices.forEach(device -> device.setCustomer(customer));
         deviceRepository.saveAll(newDevices);
 //        return getCustomerDTOFromId(customer.getId());
     }
 
-    public Optional<CustomerDTO> updateCustomerDevices(EditCustomerDevicesDTO updateCustomerDevicesDTO) throws CustomerDevicesNotUpdatable {
-        var optionalCustomer = customerRepository.findById(updateCustomerDevicesDTO.customerId());
+    public Optional<CustomerDTO> updateCustomerDevices(Long customerId, EditCustomerDevicesDTO updateCustomerDevicesDTO) throws CustomerDevicesNotUpdatable {
+        var optionalCustomer = customerRepository.findById(customerId);
         if (optionalCustomer.isPresent()) {
-            var optionalCustomerDevices = deviceRepository.findByCustomerId(updateCustomerDevicesDTO.customerId());
+            var optionalCustomerDevices = deviceRepository.findByCustomerId(customerId);
             var customer = optionalCustomer.get();
+//            if (optionalCustomerDevices.isPresent() && optionalCustomerDevices.get().isEmpty()){
             if (optionalCustomerDevices.isPresent() && optionalCustomerDevices.get().isEmpty()){
                 System.out.println("NO CUSTOMER DEVICES");
                 var newDevices = toListOfDevices(customer, updateCustomerDevicesDTO.devices());
                 updateCustomerDevices(customer, newDevices);
             } else {
-                System.out.println("FOUND CUSTOMER DEVICES");
-                //TODO check
-                var customerDevices = optionalCustomerDevices.get();
-                var nOfCustomerDevices = customerDevices.size();
-                //sum(nOfCustomerDevices, updateCustomerDevicesDTO.devices.size())<=2
-                if (nOfCustomerDevices == 2) {
-                    //NO
-                    System.out.println("ALREADY 2 DEVICES");
-                    throw new CustomerDevicesNotUpdatable();
-                } else if (nOfCustomerDevices == 1 && updateCustomerDevicesDTO.devices().size() == 1) {
-                    System.out.println("1 DEVICE, COULD ACCEPT ANOTHER 1");
-                    //PROCEED
-                    var newDevices = toListOfDevices(customer, updateCustomerDevicesDTO.devices());
-                    updateCustomerDevices(customer, newDevices);
-                } else if (nOfCustomerDevices == 1 && updateCustomerDevicesDTO.devices().size() == 2) {
-                    System.out.println("1 DEVICE, COULD NOT ACCEPT ANOTHER 2");
-                    throw new CustomerDevicesNotUpdatable();
+                if(optionalCustomerDevices.isPresent()) {
+                    System.out.println("FOUND CUSTOMER DEVICES");
+                    //TODO check and improve
+                    var customerDevices = optionalCustomerDevices.get();
+                    var nOfCustomerDevices = customerDevices.size();
+                    //sum(nOfCustomerDevices, updateCustomerDevicesDTO.devices.size())<=2
+                    if (nOfCustomerDevices == 2) {
+                        //NO
+                        System.out.println("ALREADY 2 DEVICES");
+                        throw new CustomerDevicesNotUpdatable();
+                    } else if (nOfCustomerDevices == 1 && updateCustomerDevicesDTO.devices().size() == 1) {
+                        System.out.println("1 DEVICE, COULD ACCEPT ANOTHER 1");
+                        //PROCEED
+                        var newDevices = toListOfDevices(customer, updateCustomerDevicesDTO.devices());
+                        updateCustomerDevices(customer, newDevices);
+                    } else if (nOfCustomerDevices == 1 && updateCustomerDevicesDTO.devices().size() == 2) {
+                        System.out.println("1 DEVICE, COULD NOT ACCEPT ANOTHER 2");
+                        throw new CustomerDevicesNotUpdatable();
+                    }
                 }
             }
         } else return Optional.empty();
 //        return optionalCustomer
 //                .map(customer -> toCustomerDTO(updateCustomerDevices(customer, toListOfDevices(customer, updateCustomerDevicesDTO.devices()))));
-        return getCustomerDTOFromId(updateCustomerDevicesDTO.customerId());
+        return getCustomerDTOFromId(customerId);
 //        return optionalCustomer.map(customer -> toCustomerDTO(customer, null));
     }
 

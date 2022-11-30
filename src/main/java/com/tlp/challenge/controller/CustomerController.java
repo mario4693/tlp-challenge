@@ -39,10 +39,10 @@ public class CustomerController {
     }
 
     @PatchMapping(value = "{id}/devices",consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<CustomerDTO> addDevicesToCustomer(@Valid @RequestBody EditCustomerDevicesDTO editCustomerDevicesDTO) {
+    public ResponseEntity<CustomerDTO> addDevicesToCustomer(@PathVariable(value = "id") Long customerId, @Valid @RequestBody EditCustomerDevicesDTO editCustomerDevicesDTO) {
         Optional<CustomerDTO> optionalCustomer;
         try {
-            optionalCustomer = customerService.updateCustomerDevices(editCustomerDevicesDTO);
+            optionalCustomer = customerService.updateCustomerDevices(customerId, editCustomerDevicesDTO);
         } catch (CustomerDevicesNotUpdatable e) {
             return ResponseEntity.unprocessableEntity().build();
         }

@@ -142,13 +142,15 @@ class CustomerServiceTest {
                 .withAddress("My address 9, Milano")
                 .build();
 
-        var updateCustomerDevicesDTO = new EditCustomerDevicesDTO(customerId, List.of(newCustomerDeviceDTO));
+        var updateCustomerDevicesDTO = new EditCustomerDevicesDTO(List.of(newCustomerDeviceDTO));
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
         when(deviceRepository.findByCustomerId(customerId)).thenReturn(Optional.of(Collections.emptyList()));
 
-        var newCustomerDTO = customerService.updateCustomerDevices(updateCustomerDevicesDTO);
+        var newCustomerDTO = customerService.updateCustomerDevices(customerId, updateCustomerDevicesDTO);
         verify(customerRepository, times(2)).findById(customerId);
         verify(deviceRepository, times(2)).findByCustomerId(customerId);
+//        verify(customerRepository).findById(customerId);
+//        verify(deviceRepository).findByCustomerId(customerId);
         verify(deviceRepository).saveAll(any());
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
         when(deviceRepository.findByCustomerId(customerId)).thenReturn(Optional.of(devices));
@@ -165,8 +167,8 @@ class CustomerServiceTest {
     void updateCustomerDevices_shouldReturnAnEmptyOptionalIfCustomerNotFound() throws CustomerDevicesNotUpdatable {
         var customerId = 1L;
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
-        var updateCustomerDevicesDTO = new EditCustomerDevicesDTO(customerId, null);
-        Optional<CustomerDTO> optionalCustomerDTO = customerService.updateCustomerDevices(updateCustomerDevicesDTO);
+        var updateCustomerDevicesDTO = new EditCustomerDevicesDTO(null);
+        Optional<CustomerDTO> optionalCustomerDTO = customerService.updateCustomerDevices(customerId, updateCustomerDevicesDTO);
         verify(customerRepository).findById(customerId);
         assertTrue(optionalCustomerDTO.isEmpty());
     }
