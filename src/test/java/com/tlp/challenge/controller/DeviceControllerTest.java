@@ -1,5 +1,6 @@
 package com.tlp.challenge.controller;
 
+import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditDeviceStateDTO;
 import com.tlp.challenge.entity.Device;
@@ -12,12 +13,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -97,5 +98,26 @@ class DeviceControllerTest {
         verify(deviceService).editDeviceState(deviceId, newDeviceState);
         verifyNoMoreInteractions(deviceService);
         assertTrue(Objects.isNull(response.getBody()));
+    }
+
+    @Test
+    void createDevices_shouldReturnNewDevices(){
+        var UUID_1 = UUID.randomUUID();
+        var UUID_2 = UUID.randomUUID();
+        var addDeviceDTO1 = new DeviceDTO(null, Device.DeviceState.INACTIVE);
+        var addDeviceDTO2 = new DeviceDTO(null, Device.DeviceState.LOST);
+        var deviceDTO1 = new DeviceDTO(UUID_1, Device.DeviceState.INACTIVE);
+        var deviceDTO2 = new DeviceDTO(UUID_2, Device.DeviceState.LOST);
+        var addDevicesDTO = new NewDevicesDTO(List.of(addDeviceDTO1, addDeviceDTO2));
+        var devicesDTO = List.of(deviceDTO1, deviceDTO2);
+        when(deviceService.saveDevices(addDevicesDTO)).thenReturn(devicesDTO);
+        ResponseEntity<List<DeviceDTO>> response = deviceController.createDevices(addDevicesDTO);
+        verify(deviceService).saveDevices(addDevicesDTO);
+        verifyNoMoreInteractions(deviceService);
+        assertEquals(devicesDTO, response.getBody());
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().isEmpty());
+        assertNotNull(response.getBody().get(0).id());
+        assertNotNull(response.getBody().get(1).id());
     }
 }

@@ -1,10 +1,12 @@
 package com.tlp.challenge.service;
 
+import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,5 +43,9 @@ public class DeviceService {
 
     private DeviceDTO toDeviceDTO(Device device){
         return new DeviceDTO(device.getId(), device.getState());
+    }
+
+    public List<DeviceDTO> saveDevices(NewDevicesDTO newDevicesDTO) {
+        return null;
     }
 }
