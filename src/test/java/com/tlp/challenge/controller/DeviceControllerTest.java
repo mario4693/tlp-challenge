@@ -3,8 +3,8 @@ package com.tlp.challenge.controller;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditDeviceStateDTO;
 import com.tlp.challenge.dto.NewDeviceDTO;
-import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.entity.Device;
+import com.tlp.challenge.exception.CustomerNotFoundException;
 import com.tlp.challenge.service.DeviceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -102,25 +101,20 @@ class DeviceControllerTest {
     }
 
     @Test
-    void createDevices_shouldReturnNewDevices(){
+    void createDevices_shouldReturnNewDevice() throws CustomerNotFoundException {
         var UUID_1 = UUID.randomUUID();
-        var UUID_2 = UUID.randomUUID();
-//        var newDeviceDTO1 = DeviceDTO.builder().withState(Device.DeviceState.INACTIVE).build();
-//        var newDeviceDTO2 = DeviceDTO.builder().withState(Device.DeviceState.LOST).build();
-        var newDeviceDTO1 = new NewDeviceDTO(Device.DeviceState.INACTIVE);
-        var newDeviceDTO2 = new NewDeviceDTO(Device.DeviceState.LOST);
-        var deviceDTO1 = DeviceDTO.builder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).build();
-        var deviceDTO2 = DeviceDTO.builder().withId(UUID_2).withState(Device.DeviceState.LOST).build();
-        var addDevicesDTO = new NewDevicesDTO(List.of(newDeviceDTO1, newDeviceDTO2));
-        var devicesDTO = List.of(deviceDTO1, deviceDTO2);
-        when(deviceService.saveDevices(addDevicesDTO)).thenReturn(devicesDTO);
-        ResponseEntity<List<DeviceDTO>> response = deviceController.createDevices(addDevicesDTO);
-        verify(deviceService).saveDevices(addDevicesDTO);
+        var newDeviceDTO = new NewDeviceDTO(Device.DeviceState.INACTIVE, 1L);
+        var deviceDTO = DeviceDTO.builder()
+                .withId(UUID_1)
+                .withState(Device.DeviceState.INACTIVE)
+                .withCustomerId(1L).build();
+        when(deviceService.saveDevice(newDeviceDTO)).thenReturn(deviceDTO);
+        ResponseEntity<DeviceDTO> response = deviceController.createDevice(newDeviceDTO);
+        verify(deviceService).saveDevice(newDeviceDTO);
         verifyNoMoreInteractions(deviceService);
-        assertEquals(devicesDTO, response.getBody());
+        assertEquals(deviceDTO, response.getBody());
         assertNotNull(response.getBody());
-        assertFalse(response.getBody().isEmpty());
-        assertNotNull(response.getBody().get(0).getId());
-        assertNotNull(response.getBody().get(1).getId());
+        assertNotNull(response.getBody().getId());
+        assertNotNull(response.getBody().getCustomerId());
     }
 }

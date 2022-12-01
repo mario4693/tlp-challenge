@@ -1,10 +1,12 @@
 package com.tlp.challenge.service;
 
+import com.tlp.challenge.builder.CustomerBuilder;
 import com.tlp.challenge.builder.DeviceBuilder;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.NewDeviceDTO;
-import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.entity.Device;
+import com.tlp.challenge.exception.CustomerNotFoundException;
+import com.tlp.challenge.repository.CustomerRepository;
 import com.tlp.challenge.repository.DeviceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,11 +26,14 @@ class DeviceServiceTest {
     @Mock
     private DeviceRepository deviceRepository;
 
+    @Mock
+    private CustomerRepository customerRepository;
+
     private DeviceService deviceService;
 
     @BeforeEach
     void setUp() {
-        deviceService = new DeviceService(deviceRepository);
+        deviceService = new DeviceService(deviceRepository, customerRepository);
     }
 
     @Test
@@ -103,22 +107,20 @@ class DeviceServiceTest {
     }
 
     @Test
-    void saveDevices_shouldReturnNewSavedDevices() {
+    void saveDevices_shouldReturnNewSavedDevices() throws CustomerNotFoundException {
         var UUID_1 = UUID.randomUUID();
-        var UUID_2 = UUID.randomUUID();
-//        var deviceDTO1 = DeviceDTO.builder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).build();
-//        var deviceDTO2 = DeviceDTO.builder().withId(UUID_1).withState(Device.DeviceState.LOST).build();
-        var deviceDTO1 = new NewDeviceDTO(Device.DeviceState.INACTIVE);
-        var deviceDTO2 = new NewDeviceDTO(Device.DeviceState.LOST);
-        var device1 = new DeviceBuilder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).build();
-        var device2 = new DeviceBuilder().withId(UUID_2).withState(Device.DeviceState.LOST).build();
-        var devices = List.of(device1, device2);
-        when(deviceRepository.saveAll(anyList())).thenReturn(devices);
-        var newDevicesDTO = new NewDevicesDTO(List.of(deviceDTO1, deviceDTO2));
-        var savedDevicesDTO = deviceService.saveDevices(newDevicesDTO);
-        verify(deviceRepository).saveAll(anyList());
+        var customerId = 1L;
+        var newDeviceDTO = new NewDeviceDTO(Device.DeviceState.INACTIVE, customerId);
+        var aCustomer = new CustomerBuilder().withId(customerId).build();
+        var device = new DeviceBuilder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).withCustomer(aCustomer).build();
+        when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
+        when(deviceRepository.save(any())).thenReturn(device);
+        var savedDeviceDTO = deviceService.saveDevice(newDeviceDTO);
+        verify(customerRepository).findById(customerId);
+        verify(deviceRepository).save(any());
         verifyNoMoreInteractions(deviceRepository);
-        assertFalse(savedDevicesDTO.isEmpty());
-        assertEquals(2, savedDevicesDTO.size());
+        assertNotNull(savedDeviceDTO.getId());
+        assertNotNull(savedDeviceDTO.getState());
+        assertNotNull(savedDeviceDTO.getCustomerId());
     }
 }

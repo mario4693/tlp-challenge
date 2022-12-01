@@ -25,9 +25,10 @@ public class Device {
     private Device() {
     }
 
-    public Device(UUID id, DeviceState state) {
+    public Device(UUID id, DeviceState state, Customer customer) {
         this.id = id;
         this.state = state;
+        this.customer = customer;
     }
 
     public enum DeviceState {

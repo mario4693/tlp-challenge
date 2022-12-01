@@ -1,13 +1,15 @@
 package com.tlp.challenge.controller;
 
-import com.tlp.challenge.dto.*;
+import com.tlp.challenge.dto.DeviceDTO;
+import com.tlp.challenge.dto.EditDeviceStateDTO;
+import com.tlp.challenge.dto.NewDeviceDTO;
+import com.tlp.challenge.exception.CustomerNotFoundException;
 import com.tlp.challenge.service.DeviceService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,8 +25,12 @@ public class DeviceController {
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<DeviceDTO>> createDevices(@Valid @RequestBody NewDevicesDTO newDevicesDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(deviceService.saveDevices(newDevicesDTO));
+    public ResponseEntity<DeviceDTO> createDevice(@Valid @RequestBody NewDeviceDTO newDeviceDTO) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(deviceService.saveDevice(newDeviceDTO));
+        } catch (CustomerNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping(value = "{uuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)

@@ -11,6 +11,7 @@ import java.util.UUID;
  * A DTO for the {@link com.tlp.challenge.entity.Device} entity
  */
 //public record DeviceDTO(UUID id, Device.DeviceState state, CustomerDTO customer){}
+//public record DeviceDTO(UUID id, Device.DeviceState state, Long customerId){}
 @Getter
 @Builder(setterPrefix = "with")
 @JsonInclude(value = JsonInclude.Include.NON_NULL)

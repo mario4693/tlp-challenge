@@ -26,11 +26,6 @@ public class Utils {
         return devices.stream().map(device -> DeviceDTO.builder().withId(device.getId()).withState(device.getState()).build()).toList();
     }
 
-    public static List<DeviceDTO> toListOfNewDevicesDTO(List<Device> devices) {
-//        return devices.stream().map(device -> new DeviceDTO(device.getId(), device.getState(), toCustomerDTO(device.getCustomer()))).toList();
-        return devices.stream().map(device -> DeviceDTO.builder().withId(device.getId()).withState(device.getState()).build()).toList();
-    }
-
     public static List<Device> toListOfDevices(DeviceDTO[] devices) {
         return Objects.nonNull(devices) ?
                 Arrays.stream(devices).map(device -> new DeviceBuilder().withId(device.getId()).withState(device.getState()).build()).toList()
@@ -58,5 +53,9 @@ public class Utils {
                 .withAddress(customer.getAddress())
                 .withDevices(toListOfDevicesDTO(customer.getDevices()))
                 .build();
+    }
+
+    public static Device toDevice(NewDeviceDTO newDeviceDTO, Customer customer) {
+        return new DeviceBuilder().withState(newDeviceDTO.state()).withCustomer(customer).build();
     }
 }
