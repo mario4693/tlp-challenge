@@ -7,11 +7,11 @@ import com.tlp.challenge.repository.DeviceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.tlp.challenge.util.Utils.toListOfDevices;
-import static com.tlp.challenge.util.Utils.toListOfDevicesDTO;
+import static com.tlp.challenge.util.Utils.*;
 
 @Service
 public class DeviceService {
@@ -45,11 +45,14 @@ public class DeviceService {
     }
 
     private DeviceDTO toDeviceDTO(Device device){
-        return new DeviceDTO(device.getId(), device.getState());
+//        return new DeviceDTO(device.getId(), device.getState(), toCustomerDTO(device.getCustomer()));
+        return Objects.nonNull(device.getCustomer()) ?
+                DeviceDTO.builder().withId(device.getId()).withState(device.getState()).withCustomerId(device.getCustomer().getId()).build()
+                : DeviceDTO.builder().withId(device.getId()).withState(device.getState()).build();
     }
 
     public List<DeviceDTO> saveDevices(NewDevicesDTO newDevicesDTO) {
         var savedDevices = deviceRepository.saveAll(toListOfDevices(newDevicesDTO.devices()));
-        return toListOfDevicesDTO(savedDevices);
+        return toListOfNewDevicesDTO(savedDevices);
     }
 }

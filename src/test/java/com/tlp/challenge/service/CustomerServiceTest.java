@@ -28,9 +28,8 @@ class CustomerServiceTest {
     private CustomerRepository customerRepository;
     private CustomerService customerService;
 
-//    private final static SignupDTO aSignupDTO = new SignupDTO("Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano");
-    private final static DeviceDTO device1 = new DeviceDTO(UUID.randomUUID(), Device.DeviceState.INACTIVE);
-    private final static DeviceDTO device2 = new DeviceDTO(UUID.randomUUID(), Device.DeviceState.LOST);
+    private final static DeviceDTO device1 = DeviceDTO.builder().withId(UUID.randomUUID()).withState(Device.DeviceState.INACTIVE).build();
+    private final static DeviceDTO device2 = DeviceDTO.builder().withId(UUID.randomUUID()).withState(Device.DeviceState.LOST).build();
     private final static List<DeviceDTO> devices = List.of(device1, device2);
     private final static SignupDTO aSignupDTO = new SignupDTO("Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano", device1, device2);
     private final static CustomerDTO aCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura", "ABCDEF93H01A123B", "My address 9, Milano", devices);
@@ -55,7 +54,11 @@ class CustomerServiceTest {
         CustomerDTO customerDTO = customerService.saveCustomer(aSignupDTO);
         verify(customerRepository).save(any());
         verifyNoMoreInteractions(customerRepository);
-        assertEquals(aCustomerDTO, customerDTO);
+        assertEquals(aCustomerDTO.address(), customerDTO.address());
+        assertEquals(aCustomerDTO.name(), customerDTO.name());
+        assertEquals(aCustomerDTO.surname(), customerDTO.surname());
+        assertEquals(aCustomerDTO.fiscalCode(), customerDTO.fiscalCode());
+        assertEquals(aCustomerDTO.address(), customerDTO.address());
         assertNotNull(customerDTO.id());
         assertFalse(customerDTO.devices().isEmpty());
     }

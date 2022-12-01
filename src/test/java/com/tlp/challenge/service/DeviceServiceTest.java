@@ -2,6 +2,7 @@ package com.tlp.challenge.service;
 
 import com.tlp.challenge.builder.DeviceBuilder;
 import com.tlp.challenge.dto.DeviceDTO;
+import com.tlp.challenge.dto.NewDeviceDTO;
 import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.DeviceRepository;
@@ -86,7 +87,7 @@ class DeviceServiceTest {
         verify(deviceRepository).findById(deviceId);
         verify(deviceRepository).save(any());
         assertTrue(optionalDeviceDTO.isPresent());
-        assertEquals(newDeviceState, optionalDeviceDTO.get().state());
+        assertEquals(newDeviceState, optionalDeviceDTO.get().getState());
     }
 
     @Test
@@ -105,8 +106,10 @@ class DeviceServiceTest {
     void saveDevices_shouldReturnNewSavedDevices() {
         var UUID_1 = UUID.randomUUID();
         var UUID_2 = UUID.randomUUID();
-        var deviceDTO1 = new DeviceDTO(UUID_1, Device.DeviceState.INACTIVE);
-        var deviceDTO2 = new DeviceDTO(UUID_2, Device.DeviceState.LOST);
+//        var deviceDTO1 = DeviceDTO.builder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).build();
+//        var deviceDTO2 = DeviceDTO.builder().withId(UUID_1).withState(Device.DeviceState.LOST).build();
+        var deviceDTO1 = new NewDeviceDTO(Device.DeviceState.INACTIVE);
+        var deviceDTO2 = new NewDeviceDTO(Device.DeviceState.LOST);
         var device1 = new DeviceBuilder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).build();
         var device2 = new DeviceBuilder().withId(UUID_2).withState(Device.DeviceState.LOST).build();
         var devices = List.of(device1, device2);

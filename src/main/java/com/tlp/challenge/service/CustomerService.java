@@ -4,12 +4,13 @@ import com.tlp.challenge.dto.CustomerDTO;
 import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.entity.Customer;
 import com.tlp.challenge.repository.CustomerRepository;
+import com.tlp.challenge.util.Utils;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 import static com.tlp.challenge.util.Utils.toCustomer;
-import static com.tlp.challenge.util.Utils.toListOfDevicesDTO;
+import static com.tlp.challenge.util.Utils.toCustomerDTO;
 
 @Service
 public class CustomerService {
@@ -27,20 +28,9 @@ public class CustomerService {
         return toCustomerDTO(savedCustomer);
     }
 
-    CustomerDTO toCustomerDTO(Customer customer){
-        return CustomerDTO.builder()
-                .withId(customer.getId())
-                .withName(customer.getName())
-                .withSurname(customer.getSurname())
-                .withFiscalCode(customer.getFiscalCode())
-                .withAddress(customer.getAddress())
-                .withDevices(toListOfDevicesDTO(customer.getDevices()))
-                .build();
-    }
-
     public Optional<CustomerDTO> getCustomerDTOFromId(Long customerId) {
         Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-        return optionalCustomer.map(this::toCustomerDTO);
+        return optionalCustomer.map(Utils::toCustomerDTO);
     }
 
     public Optional<CustomerDTO> editCustomerAddress(Long id, String newAddress) {

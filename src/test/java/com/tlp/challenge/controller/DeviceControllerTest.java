@@ -1,8 +1,9 @@
 package com.tlp.challenge.controller;
 
-import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditDeviceStateDTO;
+import com.tlp.challenge.dto.NewDeviceDTO;
+import com.tlp.challenge.dto.NewDevicesDTO;
 import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.service.DeviceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,13 +80,13 @@ class DeviceControllerTest {
         UUID deviceId = UUID.randomUUID();
         Device.DeviceState newDeviceState = Device.DeviceState.LOST;
         EditDeviceStateDTO editDeviceStateDTO = new EditDeviceStateDTO(newDeviceState);
-        DeviceDTO updatedDevice = new DeviceDTO(deviceId, editDeviceStateDTO.state());
+        DeviceDTO updatedDevice = DeviceDTO.builder().withId(deviceId).withState(editDeviceStateDTO.state()).build();
         when(deviceService.editDeviceState(deviceId, editDeviceStateDTO.state())).thenReturn(Optional.of(updatedDevice));
         ResponseEntity<DeviceDTO> response = deviceController.editDeviceState(deviceId, editDeviceStateDTO);
         verify(deviceService).editDeviceState(deviceId, newDeviceState);
         verifyNoMoreInteractions(deviceService);
         assertTrue(Objects.nonNull(response.getBody()));
-        assertEquals(editDeviceStateDTO.state(), response.getBody().state());
+        assertEquals(editDeviceStateDTO.state(), response.getBody().getState());
     }
 
     @Test
@@ -104,11 +105,13 @@ class DeviceControllerTest {
     void createDevices_shouldReturnNewDevices(){
         var UUID_1 = UUID.randomUUID();
         var UUID_2 = UUID.randomUUID();
-        var addDeviceDTO1 = new DeviceDTO(null, Device.DeviceState.INACTIVE);
-        var addDeviceDTO2 = new DeviceDTO(null, Device.DeviceState.LOST);
-        var deviceDTO1 = new DeviceDTO(UUID_1, Device.DeviceState.INACTIVE);
-        var deviceDTO2 = new DeviceDTO(UUID_2, Device.DeviceState.LOST);
-        var addDevicesDTO = new NewDevicesDTO(List.of(addDeviceDTO1, addDeviceDTO2));
+//        var newDeviceDTO1 = DeviceDTO.builder().withState(Device.DeviceState.INACTIVE).build();
+//        var newDeviceDTO2 = DeviceDTO.builder().withState(Device.DeviceState.LOST).build();
+        var newDeviceDTO1 = new NewDeviceDTO(Device.DeviceState.INACTIVE);
+        var newDeviceDTO2 = new NewDeviceDTO(Device.DeviceState.LOST);
+        var deviceDTO1 = DeviceDTO.builder().withId(UUID_1).withState(Device.DeviceState.INACTIVE).build();
+        var deviceDTO2 = DeviceDTO.builder().withId(UUID_2).withState(Device.DeviceState.LOST).build();
+        var addDevicesDTO = new NewDevicesDTO(List.of(newDeviceDTO1, newDeviceDTO2));
         var devicesDTO = List.of(deviceDTO1, deviceDTO2);
         when(deviceService.saveDevices(addDevicesDTO)).thenReturn(devicesDTO);
         ResponseEntity<List<DeviceDTO>> response = deviceController.createDevices(addDevicesDTO);
@@ -117,7 +120,7 @@ class DeviceControllerTest {
         assertEquals(devicesDTO, response.getBody());
         assertNotNull(response.getBody());
         assertFalse(response.getBody().isEmpty());
-        assertNotNull(response.getBody().get(0).id());
-        assertNotNull(response.getBody().get(1).id());
+        assertNotNull(response.getBody().get(0).getId());
+        assertNotNull(response.getBody().get(1).getId());
     }
 }
