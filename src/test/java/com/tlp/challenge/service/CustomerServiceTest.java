@@ -51,7 +51,7 @@ class CustomerServiceTest {
     @Test
     void saveCustomer_shouldReturnANewSavedCustomer() {
         when(customerRepository.save(any())).thenReturn(aCustomer);
-        CustomerDTO customerDTO = customerService.saveCustomer(aSignupDTO);
+        var customerDTO = customerService.saveCustomer(aSignupDTO);
         verify(customerRepository).save(any());
         verifyNoMoreInteractions(customerRepository);
         assertEquals(aCustomerDTO.address(), customerDTO.address());
@@ -65,9 +65,9 @@ class CustomerServiceTest {
 
     @Test
     void getCustomerFromId_shouldReturnAPresentOptionalWithCustomerDTO() {
-        Long customerId = 1L;
+        var customerId = 1L;
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
-        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerDTOFromId(customerId);
+        var optionalCustomerDTO = customerService.getCustomerDTOFromId(customerId);
         verify(customerRepository).findById(customerId);
         verifyNoMoreInteractions(customerRepository);
         assertTrue(optionalCustomerDTO.isPresent());
@@ -75,9 +75,9 @@ class CustomerServiceTest {
 
     @Test
     void getCustomerFromId_shouldReturnAnEmptyOptionalIfCustomerNotFound() {
-        Long customerId = 1L;
+        var customerId = 1L;
         when(customerRepository.findById(customerId)).thenReturn(Optional.empty());
-        Optional<CustomerDTO> optionalCustomerDTO = customerService.getCustomerDTOFromId(customerId);
+        var optionalCustomerDTO = customerService.getCustomerDTOFromId(customerId);
         verify(customerRepository).findById(customerId);
         verifyNoMoreInteractions(customerRepository);
         assertFalse(optionalCustomerDTO.isPresent());
@@ -85,10 +85,10 @@ class CustomerServiceTest {
 
     @Test
     void editCustomerAddress_shouldReturnACustomerDTOWithNewAddress() {
-        Long customerId = 1L;
+        var customerId = 1L;
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(aCustomer));
-        String newCustomerAddress = "My address 1, Bergamo";
-        Customer updatedCustomer = new CustomerBuilder()
+        var newCustomerAddress = "My address 1, Bergamo";
+        var updatedCustomer = new CustomerBuilder()
                 .withId(1L)
                 .withName("Mario")
                 .withSurname("Altamura")
@@ -97,7 +97,7 @@ class CustomerServiceTest {
                 .withDevices(toListOfDevices(new DeviceDTO[]{device1, device2}))
                 .build();
         when(customerRepository.save(any())).thenReturn(updatedCustomer);
-        Optional<CustomerDTO> updatedCustomerDTO = customerService.editCustomerAddress(customerId, newCustomerAddress);
+        var updatedCustomerDTO = customerService.editCustomerAddress(customerId, newCustomerAddress);
         verify(customerRepository).findById(customerId);
         verify(customerRepository).save(any());
         assertTrue(updatedCustomerDTO.isPresent());
