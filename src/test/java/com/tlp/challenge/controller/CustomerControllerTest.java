@@ -45,9 +45,9 @@ class CustomerControllerTest {
 
     @Test
     void getCustomer_shouldReturnAnExistentCustomer(){
-        Long customerId = 1L;
+        var customerId = 1L;
         when(customerService.getCustomerDTOFromId(customerId)).thenReturn(Optional.of(aCustomerDTO));
-        ResponseEntity<CustomerDTO> response = customerController.getCustomer(customerId);
+        var response = customerController.getCustomer(customerId);
         verify(customerService).getCustomerDTOFromId(customerId);
         verifyNoMoreInteractions(customerService);
         assertEquals(aCustomerDTO, response.getBody());
@@ -55,9 +55,9 @@ class CustomerControllerTest {
 
     @Test
     void getCustomer_shouldReturnNullBody(){
-        Long customerId = 1L;
+        var customerId = 1L;
         when(customerService.getCustomerDTOFromId(customerId)).thenReturn(Optional.empty());
-        ResponseEntity<CustomerDTO> response = customerController.getCustomer(customerId);
+        var response = customerController.getCustomer(customerId);
         verify(customerService).getCustomerDTOFromId(customerId);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.isNull(response.getBody()));
@@ -65,11 +65,11 @@ class CustomerControllerTest {
 
     @Test
     void editCustomerAddress_shouldReturnABodyWithUpdatedCustomer(){
-        Long customerId = 1L;
-        String newCustomerAddress = "My address 1, Bergamo";
-        CustomerDTO updatedCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura","ABCDEF93H01A123B", "My address 1, Bergamo", emptyList());
+        var customerId = 1L;
+        var newCustomerAddress = "My address 1, Bergamo";
+        var updatedCustomerDTO = new CustomerDTO(1L,"Mario", "Altamura","ABCDEF93H01A123B", "My address 1, Bergamo", emptyList());
         when(customerService.editCustomerAddress(customerId, newCustomerAddress)).thenReturn(Optional.of(updatedCustomerDTO));
-        ResponseEntity<CustomerDTO> response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
+        var response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
         verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.nonNull(response.getBody()));
@@ -78,10 +78,10 @@ class CustomerControllerTest {
 
     @Test
     void editCustomerAddress_shouldReturnNullBodyIfCustomerNotFound(){
-        Long customerId = 1L;
-        String newCustomerAddress = "My address 1, Bergamo";
+        var customerId = 1L;
+        var newCustomerAddress = "My address 1, Bergamo";
         when(customerService.editCustomerAddress(customerId, newCustomerAddress)).thenReturn(Optional.empty());
-        ResponseEntity<CustomerDTO> response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
+        var response = customerController.editCustomerAddress(customerId, new EditCustomerAddressDTO(newCustomerAddress));
         verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.isNull(response.getBody()));
