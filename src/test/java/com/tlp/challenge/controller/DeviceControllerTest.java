@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -36,9 +35,9 @@ class DeviceControllerTest {
 
     @Test
     void getDevice_shouldReturnAnExistentDeviceById(){
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceService.isDevicePresent(deviceId)).thenReturn(true);
-        ResponseEntity<Void> response = deviceController.isDevicePresent(deviceId);
+        var response = deviceController.isDevicePresent(deviceId);
         verify(deviceService).isDevicePresent(deviceId);
         verifyNoMoreInteractions(deviceService);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -46,9 +45,9 @@ class DeviceControllerTest {
 
     @Test
     void getDevice_shouldReturnEmptyBodyWhenDeviceIdNotFound(){
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceService.isDevicePresent(deviceId)).thenReturn(false);
-        ResponseEntity<Void> response = deviceController.isDevicePresent(deviceId);
+        var response = deviceController.isDevicePresent(deviceId);
         verify(deviceService).isDevicePresent(deviceId);
         verifyNoMoreInteractions(deviceService);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -56,9 +55,9 @@ class DeviceControllerTest {
 
     @Test
     void deleteDevice_shouldReturnNoContentIfDeviceCorrectlyDeleted(){
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceService.deleteDeviceById(deviceId)).thenReturn(true);
-        ResponseEntity<Void> response = deviceController.deleteDevice(deviceId);
+        var response = deviceController.deleteDevice(deviceId);
         verify(deviceService).deleteDeviceById(deviceId);
         verifyNoMoreInteractions(deviceService);
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
@@ -66,9 +65,9 @@ class DeviceControllerTest {
 
     @Test
     void deleteDevice_shouldReturnNotFoundIfDeviceToDeleteDoesNotExists(){
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceService.deleteDeviceById(deviceId)).thenReturn(false);
-        ResponseEntity<Void> response = deviceController.deleteDevice(deviceId);
+        var response = deviceController.deleteDevice(deviceId);
         verify(deviceService).deleteDeviceById(deviceId);
         verifyNoMoreInteractions(deviceService);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -76,12 +75,12 @@ class DeviceControllerTest {
 
     @Test
     void editDeviceState_shouldReturnABodyWithUpdatedDevice(){
-        UUID deviceId = UUID.randomUUID();
-        Device.DeviceState newDeviceState = Device.DeviceState.LOST;
-        EditDeviceStateDTO editDeviceStateDTO = new EditDeviceStateDTO(newDeviceState);
-        DeviceDTO updatedDevice = DeviceDTO.builder().withId(deviceId).withState(editDeviceStateDTO.state()).build();
+        var deviceId = UUID.randomUUID();
+        var newDeviceState = Device.DeviceState.LOST;
+        var editDeviceStateDTO = new EditDeviceStateDTO(newDeviceState);
+        var updatedDevice = DeviceDTO.builder().withId(deviceId).withState(editDeviceStateDTO.state()).build();
         when(deviceService.editDeviceState(deviceId, editDeviceStateDTO.state())).thenReturn(Optional.of(updatedDevice));
-        ResponseEntity<DeviceDTO> response = deviceController.editDeviceState(deviceId, editDeviceStateDTO);
+        var response = deviceController.editDeviceState(deviceId, editDeviceStateDTO);
         verify(deviceService).editDeviceState(deviceId, newDeviceState);
         verifyNoMoreInteractions(deviceService);
         assertTrue(Objects.nonNull(response.getBody()));
@@ -90,11 +89,11 @@ class DeviceControllerTest {
 
     @Test
     void editDeviceState_shouldReturnAnEmptyBodyWhenDeviceToUpdateDoesNotExists(){
-        UUID deviceId = UUID.randomUUID();
-        Device.DeviceState newDeviceState = Device.DeviceState.LOST;
-        EditDeviceStateDTO editDeviceStateDTO = new EditDeviceStateDTO(newDeviceState);
+        var deviceId = UUID.randomUUID();
+        var newDeviceState = Device.DeviceState.LOST;
+        var editDeviceStateDTO = new EditDeviceStateDTO(newDeviceState);
         when(deviceService.editDeviceState(deviceId, editDeviceStateDTO.state())).thenReturn(Optional.empty());
-        ResponseEntity<DeviceDTO> response = deviceController.editDeviceState(deviceId, editDeviceStateDTO);
+        var response = deviceController.editDeviceState(deviceId, editDeviceStateDTO);
         verify(deviceService).editDeviceState(deviceId, newDeviceState);
         verifyNoMoreInteractions(deviceService);
         assertTrue(Objects.isNull(response.getBody()));
@@ -109,7 +108,7 @@ class DeviceControllerTest {
                 .withState(Device.DeviceState.INACTIVE)
                 .withCustomerId(1L).build();
         when(deviceService.saveDevice(newDeviceDTO)).thenReturn(deviceDTO);
-        ResponseEntity<DeviceDTO> response = deviceController.createDevice(newDeviceDTO);
+        var response = deviceController.createDevice(newDeviceDTO);
         verify(deviceService).saveDevice(newDeviceDTO);
         verifyNoMoreInteractions(deviceService);
         assertEquals(deviceDTO, response.getBody());
