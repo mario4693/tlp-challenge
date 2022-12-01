@@ -21,8 +21,6 @@ public class Utils {
     }
 
     public static List<DeviceDTO> toListOfDevicesDTO(List<Device> devices) {
-//        return devices.stream().map(device -> new DeviceDTO(device.getId(), device.getState(), toCustomerDTO(device.getCustomer()))).toList();
-//        return devices.stream().map(device -> DeviceDTO.builder().withId(device.getId()).withState(device.getState()).withCustomerId(device.getCustomer().getId()).build()).toList();
         return devices.stream().map(device -> DeviceDTO.builder().withId(device.getId()).withState(device.getState()).build()).toList();
     }
 

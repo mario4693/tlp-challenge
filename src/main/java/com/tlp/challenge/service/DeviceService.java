@@ -29,7 +29,7 @@ public class DeviceService {
     }
 
     public boolean deleteDeviceById(UUID deviceId) {
-        boolean isDeleted = false;
+        var isDeleted = false;
         if(deviceRepository.existsById(deviceId)){
             deviceRepository.deleteById(deviceId);
             isDeleted = true;
@@ -38,8 +38,8 @@ public class DeviceService {
     }
 
     public Optional<DeviceDTO> editDeviceState(UUID deviceId, Device.DeviceState newDeviceState) {
-        Optional<Device> optionalDevice = deviceRepository.findById(deviceId);
-        return optionalDevice.map(device -> toDeviceDTO(updateDeviceState(device, newDeviceState)));
+        return deviceRepository.findById(deviceId)
+                .map(device -> toDeviceDTO(updateDeviceState(device, newDeviceState)));
     }
 
     private Device updateDeviceState(Device device, Device.DeviceState newDeviceState){

@@ -22,20 +22,20 @@ public class CustomerService {
     }
 
     public CustomerDTO saveCustomer(SignupDTO signupDTO) {
-        Customer aCustomer = toCustomer(signupDTO);
+        var aCustomer = toCustomer(signupDTO);
         aCustomer.getDevices().forEach(device -> device.setCustomer(aCustomer));
         Customer savedCustomer = customerRepository.save(aCustomer);
         return toCustomerDTO(savedCustomer);
     }
 
     public Optional<CustomerDTO> getCustomerDTOFromId(Long customerId) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-        return optionalCustomer.map(Utils::toCustomerDTO);
+        return customerRepository.findById(customerId)
+                .map(Utils::toCustomerDTO);
     }
 
     public Optional<CustomerDTO> editCustomerAddress(Long id, String newAddress) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(id);
-        return optionalCustomer.map(customer -> toCustomerDTO(updateCustomerAddress(customer, newAddress)));
+        return customerRepository.findById(id)
+                .map(customer -> toCustomerDTO(updateCustomerAddress(customer, newAddress)));
     }
 
     private Customer updateCustomerAddress(Customer customer, String newAddress){
