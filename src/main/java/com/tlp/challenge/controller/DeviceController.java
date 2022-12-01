@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -45,7 +44,7 @@ public class DeviceController {
 
     @PatchMapping(value = "{uuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<DeviceDTO> editDeviceState(@PathVariable UUID uuid, @Valid @RequestBody EditDeviceStateDTO editDeviceStateDTO) {
-        Optional<DeviceDTO> optionalDeviceDTO = deviceService.editDeviceState(uuid, editDeviceStateDTO.state());
+        var optionalDeviceDTO = deviceService.editDeviceState(uuid, editDeviceStateDTO.state());
         return optionalDeviceDTO.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
