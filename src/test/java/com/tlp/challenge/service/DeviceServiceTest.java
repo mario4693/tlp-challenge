@@ -2,7 +2,6 @@ package com.tlp.challenge.service;
 
 import com.tlp.challenge.builder.CustomerBuilder;
 import com.tlp.challenge.builder.DeviceBuilder;
-import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.NewDeviceDTO;
 import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.exception.CustomerNotFoundException;
@@ -38,9 +37,9 @@ class DeviceServiceTest {
 
     @Test
     void isDevicePresent_shouldReturnTrue() {
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(new DeviceBuilder().build()));
-        boolean isPresent = deviceService.isDevicePresent(deviceId);
+        var isPresent = deviceService.isDevicePresent(deviceId);
         verify(deviceRepository).findById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertTrue(isPresent);
@@ -48,9 +47,9 @@ class DeviceServiceTest {
 
     @Test
     void isDevicePresent_shouldReturnFalse() {
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceRepository.findById(deviceId)).thenReturn(Optional.empty());
-        boolean isPresent = deviceService.isDevicePresent(deviceId);
+        var isPresent = deviceService.isDevicePresent(deviceId);
         verify(deviceRepository).findById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertFalse(isPresent);
@@ -58,7 +57,7 @@ class DeviceServiceTest {
 
     @Test
     void deleteDeviceById_shouldReturnTrueIfDeleteCorrectlyPerformed() {
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceRepository.existsById(deviceId)).thenReturn(true);
         boolean isDeleted = deviceService.deleteDeviceById(deviceId);
         verify(deviceRepository).existsById(deviceId);
@@ -69,9 +68,9 @@ class DeviceServiceTest {
 
     @Test
     void deleteDeviceById_shouldReturnFalseIfDeviceHasNotBeenDeleted() {
-        UUID deviceId = UUID.randomUUID();
+        var deviceId = UUID.randomUUID();
         when(deviceRepository.existsById(deviceId)).thenReturn(false);
-        boolean isDeleted = deviceService.deleteDeviceById(deviceId);
+        var isDeleted = deviceService.deleteDeviceById(deviceId);
         verify(deviceRepository).existsById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertFalse(isDeleted);
@@ -79,15 +78,15 @@ class DeviceServiceTest {
 
     @Test
     void editDeviceState_shouldReturnADeviceDTOWithNewAddress(){
-        UUID deviceId = UUID.randomUUID();
-        Device.DeviceState oldState = Device.DeviceState.INACTIVE;
-        Device.DeviceState newDeviceState = Device.DeviceState.LOST;
-        Device oldDevice = new DeviceBuilder().withId(deviceId).withState(oldState).build();
-        Device newDevice = new DeviceBuilder().withId(deviceId).withState(newDeviceState).build();
+        var deviceId = UUID.randomUUID();
+        var oldState = Device.DeviceState.INACTIVE;
+        var newDeviceState = Device.DeviceState.LOST;
+        var oldDevice = new DeviceBuilder().withId(deviceId).withState(oldState).build();
+        var newDevice = new DeviceBuilder().withId(deviceId).withState(newDeviceState).build();
         when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(oldDevice));
         when(deviceRepository.save(any())).thenReturn(newDevice);
 
-        Optional<DeviceDTO> optionalDeviceDTO = deviceService.editDeviceState(deviceId, newDeviceState);
+        var optionalDeviceDTO = deviceService.editDeviceState(deviceId, newDeviceState);
         verify(deviceRepository).findById(deviceId);
         verify(deviceRepository).save(any());
         assertTrue(optionalDeviceDTO.isPresent());
@@ -96,11 +95,11 @@ class DeviceServiceTest {
 
     @Test
     void editDeviceState_shouldReturnAnEmptyOptionalIfDeviceNotFound(){
-        UUID deviceId = UUID.randomUUID();
-        Device.DeviceState newDeviceState = Device.DeviceState.LOST;
+        var deviceId = UUID.randomUUID();
+        var newDeviceState = Device.DeviceState.LOST;
         when(deviceRepository.findById(deviceId)).thenReturn(Optional.empty());
 
-        Optional<DeviceDTO> optionalDeviceDTO = deviceService.editDeviceState(deviceId, newDeviceState);
+        var optionalDeviceDTO = deviceService.editDeviceState(deviceId, newDeviceState);
         verify(deviceRepository).findById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertFalse(optionalDeviceDTO.isPresent());
