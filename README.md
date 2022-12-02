@@ -24,14 +24,21 @@ Go to the project directory
 ```bash
   cd tlp-challenge
 ```
-## Running Tests
+## Running Unit Tests
 
-To run tests, run the following command
+To run unit tests, run the following command
 
 ```bash
   mvn test
 ```
 
+## Running Integration Tests
+
+To run integration tests, run the following command
+
+```bash
+  mvn integration-test
+```
 
 ## Run Locally
 
