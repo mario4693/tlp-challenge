@@ -2,4 +2,6 @@ package com.tlp.challenge.dto;
 
 import com.tlp.challenge.entity.Device;
 
-public record NewDeviceDTO(Device.DeviceState state, Long customerId) {}
+import javax.validation.constraints.NotNull;
+
+public record NewDeviceDTO(@NotNull Device.DeviceState state, @NotNull Long customerId) {}
