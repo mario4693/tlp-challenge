@@ -13,7 +13,7 @@ import static com.tlp.challenge.util.Utils.toCustomer;
 import static com.tlp.challenge.util.Utils.toCustomerDTO;
 
 @Service
-public class CustomerService {
+public class CustomerService implements ICustomerService {
 
     private final CustomerRepository customerRepository;
 
@@ -21,6 +21,7 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
+    @Override
     public CustomerDTO saveCustomer(SignupDTO signupDTO) {
         var aCustomer = toCustomer(signupDTO);
         aCustomer.getDevices().forEach(device -> device.setCustomer(aCustomer));
@@ -28,11 +29,13 @@ public class CustomerService {
         return toCustomerDTO(savedCustomer);
     }
 
+    @Override
     public Optional<CustomerDTO> getCustomerDTOFromId(Long customerId) {
         return customerRepository.findById(customerId)
                 .map(Utils::toCustomerDTO);
     }
 
+    @Override
     public Optional<CustomerDTO> editCustomerAddress(Long id, String newAddress) {
         return customerRepository.findById(id)
                 .map(customer -> toCustomerDTO(updateCustomerAddress(customer, newAddress)));
