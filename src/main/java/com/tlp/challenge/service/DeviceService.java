@@ -15,7 +15,7 @@ import java.util.UUID;
 import static com.tlp.challenge.util.Utils.toDevice;
 
 @Service
-public class DeviceService {
+public class DeviceService implements IDeviceService {
     private final DeviceRepository deviceRepository;
     private final CustomerRepository customerRepository;
 
@@ -24,10 +24,12 @@ public class DeviceService {
         this.customerRepository = customerRepository;
     }
 
+    @Override
     public boolean isDevicePresent(UUID deviceId) {
         return deviceRepository.findById(deviceId).isPresent();
     }
 
+    @Override
     public boolean deleteDeviceById(UUID deviceId) {
         var isDeleted = false;
         if(deviceRepository.existsById(deviceId)){
@@ -37,6 +39,7 @@ public class DeviceService {
         return isDeleted;
     }
 
+    @Override
     public Optional<DeviceDTO> editDeviceState(UUID deviceId, Device.DeviceState newDeviceState) {
         return deviceRepository.findById(deviceId)
                 .map(device -> toDeviceDTO(updateDeviceState(device, newDeviceState)));
@@ -53,6 +56,7 @@ public class DeviceService {
                 : DeviceDTO.builder().withId(device.getId()).withState(device.getState()).build();
     }
 
+    @Override
     public DeviceDTO saveDevice(NewDeviceDTO newDeviceDTO) throws CustomerNotFoundException {
         var customer = customerRepository.findById(newDeviceDTO.customerId()).orElseThrow(CustomerNotFoundException::new);
         var savedDevice = deviceRepository.save(toDevice(newDeviceDTO, customer));
