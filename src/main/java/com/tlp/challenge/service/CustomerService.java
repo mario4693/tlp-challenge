@@ -41,6 +41,16 @@ public class CustomerService implements ICustomerService {
                 .map(customer -> toCustomerDTO(updateCustomerAddress(customer, newAddress)));
     }
 
+    @Override
+    public boolean deleteCustomerById(Long customerId) {
+        var isDeleted = false;
+        if (customerRepository.existsById(customerId)) {
+            customerRepository.deleteById(customerId);
+            isDeleted=true;
+        }
+        return isDeleted;
+    }
+
     private Customer updateCustomerAddress(Customer customer, String newAddress){
         customer.setAddress(newAddress);
         customerRepository.save(customer);

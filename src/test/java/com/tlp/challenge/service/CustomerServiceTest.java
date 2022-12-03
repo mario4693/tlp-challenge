@@ -105,4 +105,25 @@ class CustomerServiceTest {
         assertEquals(newCustomerAddress, updatedCustomerDTO.get().address());
         assertEquals(updatedCustomer.getAddress(), updatedCustomerDTO.get().address());
     }
+
+    @Test
+    void deleteCustomerById_shouldReturnTrueIfDeleteCorrectlyPerformed() {
+        var customerId = 1L;
+        when(customerRepository.existsById(customerId)).thenReturn(true);
+        boolean isCustomerDeleted = customerService.deleteCustomerById(customerId);
+        verify(customerRepository).existsById(customerId);
+        verify(customerRepository).deleteById(customerId);
+        verifyNoMoreInteractions(customerRepository);
+        assertTrue(isCustomerDeleted);
+    }
+
+    @Test
+    void deleteCustomerById_shouldReturnFalseIfCustomerDoesNotExists() {
+        var customerId = 1L;
+        when(customerRepository.existsById(customerId)).thenReturn(false);
+        var isCustomerDeleted = customerService.deleteCustomerById(customerId);
+        verify(customerRepository).existsById(customerId);
+        verifyNoMoreInteractions(customerRepository);
+        assertFalse(isCustomerDeleted);
+    }
 }

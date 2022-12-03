@@ -37,4 +37,9 @@ public class CustomerController {
         var optionalCustomer = customerService.editCustomerAddress(id, editCustomerAddressDTO.address());
         return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping(value = "{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+        return customerService.deleteCustomerById(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+    }
 }

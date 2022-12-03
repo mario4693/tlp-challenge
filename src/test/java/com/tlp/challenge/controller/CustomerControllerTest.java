@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -85,5 +85,25 @@ class CustomerControllerTest {
         verify(customerService).editCustomerAddress(customerId, newCustomerAddress);
         verifyNoMoreInteractions(customerService);
         assertTrue(Objects.isNull(response.getBody()));
+    }
+
+    @Test
+    void deleteCustomer_shouldReturnNoContentIfCustomerCorrectlyDeleted() {
+        var customerId = 1L;
+        when(customerService.deleteCustomerById(customerId)).thenReturn(true);
+        var response = customerController.deleteCustomer(customerId);
+        verify(customerService).deleteCustomerById(customerId);
+        verifyNoMoreInteractions(customerService);
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
+
+    @Test
+    void deleteCustomer_shouldReturnNotFoundIfCustomerToDeleteDoesNotExists(){
+        var customerId = 1L;
+        when(customerService.deleteCustomerById(customerId)).thenReturn(false);
+        var response = customerController.deleteCustomer(customerId);
+        verify(customerService).deleteCustomerById(customerId);
+        verifyNoMoreInteractions(customerService);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

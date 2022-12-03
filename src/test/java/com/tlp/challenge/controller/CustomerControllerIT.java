@@ -120,4 +120,20 @@ class CustomerControllerIT {
                                 """))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void deleteCustomer_shouldReturn204IfCustomerCorrectlyDeleted() throws Exception {
+        var customerId = customerRepository.save(aCustomer).getId();
+        mockMvc.perform(delete(BASE_PATH + "/customers/"+customerId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteCustomer_shouldReturn404IfCustomerToDeleteNotFound() throws Exception {
+        var customerId = 1;
+        mockMvc.perform(delete(BASE_PATH + "/customers/"+customerId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }
