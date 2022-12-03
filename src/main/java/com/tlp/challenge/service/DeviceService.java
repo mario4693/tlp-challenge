@@ -3,6 +3,7 @@ package com.tlp.challenge.service;
 import com.tlp.challenge.dto.NewDeviceDTO;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.entity.Device;
+import com.tlp.challenge.exception.CustomerDevicesFullException;
 import com.tlp.challenge.exception.CustomerNotFoundException;
 import com.tlp.challenge.repository.CustomerRepository;
 import com.tlp.challenge.repository.DeviceRepository;
@@ -57,9 +58,11 @@ public class DeviceService implements IDeviceService {
     }
 
     @Override
-    public DeviceDTO saveDevice(NewDeviceDTO newDeviceDTO) throws CustomerNotFoundException {
+    public DeviceDTO saveDevice(NewDeviceDTO newDeviceDTO) throws CustomerNotFoundException, CustomerDevicesFullException {
         var customer = customerRepository.findById(newDeviceDTO.customerId()).orElseThrow(CustomerNotFoundException::new);
-        var savedDevice = deviceRepository.save(toDevice(newDeviceDTO, customer));
-        return toDeviceDTO(savedDevice);
+        if(customer.getDevices().size()<2) {
+            var savedDevice = deviceRepository.save(toDevice(newDeviceDTO, customer));
+            return toDeviceDTO(savedDevice);
+        } else throw new CustomerDevicesFullException();
     }
 }

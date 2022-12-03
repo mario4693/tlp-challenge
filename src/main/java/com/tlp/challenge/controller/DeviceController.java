@@ -3,6 +3,7 @@ package com.tlp.challenge.controller;
 import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditDeviceStateDTO;
 import com.tlp.challenge.dto.NewDeviceDTO;
+import com.tlp.challenge.exception.CustomerDevicesFullException;
 import com.tlp.challenge.exception.CustomerNotFoundException;
 import com.tlp.challenge.service.DeviceService;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,8 @@ public class DeviceController {
             return ResponseEntity.status(HttpStatus.CREATED).body(deviceService.saveDevice(newDeviceDTO));
         } catch (CustomerNotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (CustomerDevicesFullException e) {
+            return ResponseEntity.unprocessableEntity().build();
         }
     }
 

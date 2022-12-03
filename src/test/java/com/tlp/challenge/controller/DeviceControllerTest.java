@@ -4,6 +4,7 @@ import com.tlp.challenge.dto.DeviceDTO;
 import com.tlp.challenge.dto.EditDeviceStateDTO;
 import com.tlp.challenge.dto.NewDeviceDTO;
 import com.tlp.challenge.entity.Device;
+import com.tlp.challenge.exception.CustomerDevicesFullException;
 import com.tlp.challenge.exception.CustomerNotFoundException;
 import com.tlp.challenge.service.DeviceService;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,7 +101,7 @@ class DeviceControllerTest {
     }
 
     @Test
-    void createDevices_shouldReturnNewDevice() throws CustomerNotFoundException {
+    void createDevices_shouldReturnNewDevice() throws CustomerNotFoundException, CustomerDevicesFullException {
         var UUID_1 = UUID.randomUUID();
         var newDeviceDTO = new NewDeviceDTO(Device.DeviceState.INACTIVE, 1L);
         var deviceDTO = DeviceDTO.builder()
