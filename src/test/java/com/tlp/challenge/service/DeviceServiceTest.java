@@ -40,9 +40,9 @@ class DeviceServiceTest {
     @Test
     void isDevicePresent_shouldReturnTrue() {
         var deviceId = UUID.randomUUID();
-        when(deviceRepository.findById(deviceId)).thenReturn(Optional.of(new DeviceBuilder().build()));
+        when(deviceRepository.existsById(deviceId)).thenReturn(true);
         var isPresent = deviceService.isDevicePresent(deviceId);
-        verify(deviceRepository).findById(deviceId);
+        verify(deviceRepository).existsById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertTrue(isPresent);
     }
@@ -50,9 +50,9 @@ class DeviceServiceTest {
     @Test
     void isDevicePresent_shouldReturnFalse() {
         var deviceId = UUID.randomUUID();
-        when(deviceRepository.findById(deviceId)).thenReturn(Optional.empty());
+        when(deviceRepository.existsById(deviceId)).thenReturn(false);
         var isPresent = deviceService.isDevicePresent(deviceId);
-        verify(deviceRepository).findById(deviceId);
+        verify(deviceRepository).existsById(deviceId);
         verifyNoMoreInteractions(deviceRepository);
         assertFalse(isPresent);
     }

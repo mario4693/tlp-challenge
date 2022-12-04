@@ -27,7 +27,7 @@ public class DeviceService implements IDeviceService {
 
     @Override
     public boolean isDevicePresent(UUID deviceId) {
-        return deviceRepository.findById(deviceId).isPresent();
+        return deviceRepository.existsById(deviceId);
     }
 
     @Override
