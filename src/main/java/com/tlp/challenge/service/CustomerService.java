@@ -53,7 +53,6 @@ public class CustomerService implements ICustomerService {
 
     private Customer updateCustomerAddress(Customer customer, String newAddress){
         customer.setAddress(newAddress);
-        customerRepository.save(customer);
-        return customer;
+        return customerRepository.save(customer);
     }
 }
