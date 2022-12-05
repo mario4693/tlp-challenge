@@ -6,6 +6,7 @@ import com.tlp.challenge.dto.NewDeviceDTO;
 import com.tlp.challenge.exception.CustomerDevicesFullException;
 import com.tlp.challenge.exception.CustomerNotFoundException;
 import com.tlp.challenge.service.DeviceService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -43,7 +44,7 @@ public class DeviceController {
         }
     }
 
-
+    @Parameter(name = "uuid", description = "Device id to check if present")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Device specified is present"),
             @ApiResponse(responseCode = "404", description = "Device not found", content = @Content),
@@ -53,6 +54,7 @@ public class DeviceController {
         return deviceService.isDevicePresent(uuid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
+    @Parameter(name = "uuid", description = "Device id to delete")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Device specified has been deleted"),
             @ApiResponse(responseCode = "404", description = "Device not found", content = @Content),
@@ -62,6 +64,7 @@ public class DeviceController {
         return deviceService.deleteDeviceById(uuid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
+    @Parameter(name = "uuid", description = "Device id to update with new state")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "New edited device"),
             @ApiResponse(responseCode = "404", description = "Device to updated not found", content = @Content),
