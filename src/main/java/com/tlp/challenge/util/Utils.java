@@ -16,9 +16,6 @@ import java.util.Objects;
 import static java.util.Collections.emptyList;
 
 public class Utils {
-    public static List<Device> toListOfDevices(List<NewDeviceDTO> devices) {
-        return devices.stream().map(device -> new DeviceBuilder().withState(device.state()).build()).toList();
-    }
 
     public static List<DeviceDTO> toListOfDevicesDTO(List<Device> devices) {
         return devices.stream().map(device -> DeviceDTO.builder().withId(device.getId()).withState(device.getState()).build()).toList();
