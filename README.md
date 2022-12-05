@@ -24,9 +24,18 @@ Go to the project directory
 ```bash
   cd tlp-challenge
 ```
+
+## Build
+
+To build sources run
+
+```bash
+  mvn compile
+```
+
 ## Running Unit Tests
 
-To run unit tests, run the following command
+To run unit tests only, run the following command
 
 ```bash
   mvn test
@@ -34,7 +43,7 @@ To run unit tests, run the following command
 
 ## Running Integration Tests
 
-To run integration tests, run the following command
+To run integration tests after unit test, run the following command
 
 ```bash
   mvn integration-test
@@ -47,3 +56,6 @@ Start the project
 ```bash
   mvn spring-boot:run
 ```
+
+## Documentation
+While project is running, documentation is available at: http://localhost:8080/swagger-ui.html
