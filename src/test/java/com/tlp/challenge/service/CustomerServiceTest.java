@@ -7,6 +7,7 @@ import com.tlp.challenge.dto.SignupDTO;
 import com.tlp.challenge.entity.Customer;
 import com.tlp.challenge.entity.Device;
 import com.tlp.challenge.repository.CustomerRepository;
+import com.tlp.challenge.util.CustomerMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +27,9 @@ class CustomerServiceTest {
 
     @Mock
     private CustomerRepository customerRepository;
+
+    @Mock
+    private CustomerMapper customerMapper;
     private CustomerService customerService;
 
     private final static DeviceDTO device1 = DeviceDTO.builder().withId(UUID.randomUUID()).withState(Device.DeviceState.INACTIVE).build();
@@ -45,13 +49,15 @@ class CustomerServiceTest {
 
     @BeforeEach
     void setUp() {
-        customerService = new CustomerService(customerRepository);
+        customerService = new CustomerService(customerRepository, customerMapper);
     }
 
     @Test
     void saveCustomer_shouldReturnANewSavedCustomer() {
         when(customerRepository.save(any())).thenReturn(aCustomer);
+        when(customerMapper.toCustomer(aSignupDTO)).thenReturn(aCustomer);
         var customerDTO = customerService.saveCustomer(aSignupDTO);
+        verify(customerMapper, only()).toCustomer(aSignupDTO);
         verify(customerRepository).save(any());
         verifyNoMoreInteractions(customerRepository);
         assertEquals(aCustomerDTO.address(), customerDTO.address());
