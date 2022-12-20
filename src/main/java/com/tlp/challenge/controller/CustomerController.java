@@ -36,7 +36,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "200", description = "Details of customer"),
             @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content),
     })
-    @GetMapping(value = "{id}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = "{id}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<CustomerDTO> getCustomer(@PathVariable Long id) {
         var optionalCustomer = customerService.getCustomerDTOFromId(id);
         return optionalCustomer.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

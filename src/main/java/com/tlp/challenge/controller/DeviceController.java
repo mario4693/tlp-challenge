@@ -59,7 +59,7 @@ public class DeviceController {
             @ApiResponse(responseCode = "204", description = "Device specified has been deleted"),
             @ApiResponse(responseCode = "404", description = "Device not found", content = @Content),
     })
-    @DeleteMapping(value = "{uuid}", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "{uuid}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> deleteDevice(@PathVariable UUID uuid) {
         return deviceService.deleteDeviceById(uuid) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
